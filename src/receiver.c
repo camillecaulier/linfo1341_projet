@@ -13,10 +13,24 @@ int print_usage(char *prog_name) {
     ERROR("Usage:\n\t%s [-s stats_filename] listen_ip listen_port", prog_name);
     return EXIT_FAILURE;
 }
+int check
+
+int check_length(struct DATA *data){
+    if(data->LENGTH > 0b1000000000){
+        printf("message has length longer than 512");
+        return -1;
+    }
+    return 0;
+}
+
+
+
 
 // gcc receiver.c -o receiver
 // ./receiver ipv6 port
 // 2a02:2788:1a4:552:eee9:bbda:b6d0:4e08
+
+//messages are sent in network type order
 int main(int argc, char **argv) {
     int opt;
 

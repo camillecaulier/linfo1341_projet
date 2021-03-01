@@ -2,22 +2,29 @@
  * A set of logging macro and functions that can be used.
  */
 
-typedef struct{
+struct DATA{
     unsigned int TYPE : 2;
     unsigned int TR : 1;
     unsigned int WINDOW: 5;
     unsigned int LENGTH: 16;  //uint16_t
     unsigned int SEQNEUM: 8;
-    unsigned int
+    unsigned int CRC1 : 32;
+    char* PAYLOAD;
+    unsigned int CRC2 : 32;
 
 
+};
 
+struct NA_ACK{
+    //unsigned int IsAck : 1;// 1 (true) si c'est ack
+    unsigned int TYPE : 2; // 0b10ACK  0b11 NACK
+    unsigned int TR : 1;
+    unsigned int WINDOW : 5;
+//    unsigned int LENGTH : 16;
+    //pas de length dans le nack ou ack
+    //tot = 8 bit
 
-}DATA;
-
-typedef struct{
-
-}NA_ACK;
+};
 
 #ifndef __LOG_H_
 #define __LOG_H_
