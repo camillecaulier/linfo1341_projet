@@ -63,10 +63,10 @@ RM = "C:\Users\camille626\CLion 2020.3.2\bin\cmake\win\bin\cmake.exe" -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = D:\camille626\Documents\bac_3\linfo1341_reseaux\projet
+CMAKE_SOURCE_DIR = D:\camille626\Documents\bac_3\linfo1341_reseaux\linfo1341_projet
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = D:\camille626\Documents\bac_3\linfo1341_reseaux\projet\cmake-build-debug
+CMAKE_BINARY_DIR = D:\camille626\Documents\bac_3\linfo1341_reseaux\linfo1341_projet\cmake-build-debug
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -93,14 +93,14 @@ clean: CMakeFiles/projet.dir/clean
 CMakeFiles/projet.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\projet.dir\build.make CMakeFiles/projet.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\projet.dir\build.make CMakeFiles/projet.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\camille626\Documents\bac_3\linfo1341_reseaux\projet\cmake-build-debug\CMakeFiles --progress-num=1,2,3,4 "Built target projet"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\camille626\Documents\bac_3\linfo1341_reseaux\linfo1341_projet\cmake-build-debug\CMakeFiles --progress-num=1,2,3,4 "Built target projet"
 .PHONY : CMakeFiles/projet.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/projet.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\camille626\Documents\bac_3\linfo1341_reseaux\projet\cmake-build-debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\camille626\Documents\bac_3\linfo1341_reseaux\linfo1341_projet\cmake-build-debug\CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/projet.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\camille626\Documents\bac_3\linfo1341_reseaux\projet\cmake-build-debug\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\camille626\Documents\bac_3\linfo1341_reseaux\linfo1341_projet\cmake-build-debug\CMakeFiles 0
 .PHONY : CMakeFiles/projet.dir/rule
 
 # Convenience name for target.

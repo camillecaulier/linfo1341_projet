@@ -14,7 +14,38 @@ void trtp_init(struct TRTP* trtp){
 	trtp->CRC1 = 0;
 	trtp->CRC2 = 0;
 	free(&trtp->PAYLOAD);
-	}
+}
+
+/*
+ * display the byte
+ */
+void display_byte(uint8_t byte)
+{
+    int j = 0;
+    for (j = 0; j < 8;  j++) printf("%d", ((byte >> (7-j)) & 1));
+    printf(" ");
+}
+
+/**
+ * display in byte repsentation the message/data
+ */
+void byte_display(void *data, int size){
+    uint8_t byte;
+    for(int i = 0 ; i < size ; i++){
+        memcpy(&byte, data + i, 1);
+        display_byte(byte);
+    }
+
+    printf("\n");
+
+    for(int i = 0 ; i < size; i++){
+        memcpy(&byte, data +i  , 1);
+        printf("%02X", byte);
+    }
+    printf("\n");
+    
+}
+
 void dump(const uint8_t *bytes, size_t len) {
     for (size_t i = 0; i < len;) {
         fprintf(stderr, "%04x:  ", (int) i);

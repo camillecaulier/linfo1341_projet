@@ -8,6 +8,8 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <string.h>
+#include <stdint.h>
+
 struct TRTP{
 	
 
@@ -15,6 +17,7 @@ struct TRTP{
 					TR : 1,
 					WINDOW: 5;
     uint16_t LENGTH: 16;  //uint16_t
+
 	uint8_t  SEQNEUM: 8;
     unsigned int CRC1 : 32;
     char* PAYLOAD;
