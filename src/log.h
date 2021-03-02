@@ -9,8 +9,12 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stddef.h>
 
-struct TRTP{
+struct DATA{
 	
 
 	uint8_t 		TYPE : 2,
@@ -25,16 +29,22 @@ struct TRTP{
 
 
 };
+struct ACK{
+	uint8_t 		TYPE : 2,
+					TR : 1,
+					WINDOW: 5;
+	uint8_t  SEQNEUM: 8;
+    unsigned int CRC1 : 32;
+    char* PAYLOAD;
+    unsigned int CRC2 : 32;
+	};
 
 
 
 #ifndef __LOG_H_
 #define __LOG_H_
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stddef.h>
+
 void trtp_init(struct TRTP*);
 #ifdef _COLOR
 /* Want more/other colors? See https://stackoverflow.com/a/3219471 and
