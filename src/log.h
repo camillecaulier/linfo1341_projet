@@ -9,12 +9,15 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
 #include <stddef.h>
 
-struct DATA{
+
+#define MAXLEN 512
+#define DATA 2
+#define ACK 1
+#define NACK 3
+
+struct TRTP{
 	
 
 	uint8_t 		TYPE : 2,
@@ -24,20 +27,12 @@ struct DATA{
 
 	uint8_t  SEQNEUM: 8;
     unsigned int CRC1 : 32;
-    char* PAYLOAD;
+    char* PAYLOAD[MAXLEN];
     unsigned int CRC2 : 32;
 
 
 };
-struct ACK{
-	uint8_t 		TYPE : 2,
-					TR : 1,
-					WINDOW: 5;
-	uint8_t  SEQNEUM: 8;
-    unsigned int CRC1 : 32;
-    char* PAYLOAD;
-    unsigned int CRC2 : 32;
-	};
+
 
 
 
@@ -45,7 +40,9 @@ struct ACK{
 #define __LOG_H_
 
 
+
 void trtp_init(struct TRTP*);
+ssize_t send(int sockfd,const void *buf,size_t len, int flags);
 #ifdef _COLOR
 /* Want more/other colors? See https://stackoverflow.com/a/3219471 and
  * https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
