@@ -11,7 +11,9 @@ void trtp_init(struct TRTP* trtp){
 	trtp->WINDOW = 0;
 	trtp->LENGTH = 0;
 	trtp->SEQNEUM = 0;
-	trtp->TIMESTAMP = 0;
+	trtp->CRC1 = 0;
+	trtp->CRC2 = 0;
+	free(&trtp->PAYLOAD);
 	}
 void dump(const uint8_t *bytes, size_t len) {
     for (size_t i = 0; i < len;) {

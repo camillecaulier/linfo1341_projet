@@ -1,13 +1,21 @@
 /***
  * A set of logging macro and functions that can be used.
  */
-
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <string.h>
 struct TRTP{
-    unsigned int TYPE : 2;
-    unsigned int TR : 1;
-    unsigned int WINDOW: 5;
-    unsigned int LENGTH: 16;  //uint16_t
-    unsigned int SEQNEUM: 8;
+	
+
+	uint8_t 		TYPE : 2,
+					TR : 1,
+					WINDOW: 5;
+    uint16_t LENGTH: 16;  //uint16_t
+	uint8_t  SEQNEUM: 8;
     unsigned int CRC1 : 32;
     char* PAYLOAD;
     unsigned int CRC2 : 32;
