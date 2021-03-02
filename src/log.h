@@ -2,7 +2,7 @@
  * A set of logging macro and functions that can be used.
  */
 
-struct DATA{
+struct TRTP{
     unsigned int TYPE : 2;
     unsigned int TR : 1;
     unsigned int WINDOW: 5;
@@ -15,16 +15,7 @@ struct DATA{
 
 };
 
-struct NA_ACK{
-    //unsigned int IsAck : 1;// 1 (true) si c'est ack
-    unsigned int TYPE : 2; // 0b10ACK  0b11 NACK
-    unsigned int TR : 1;
-    unsigned int WINDOW : 5;
-//    unsigned int LENGTH : 16;
-    //pas de length dans le nack ou ack
-    //tot = 8 bit
 
-};
 
 #ifndef __LOG_H_
 #define __LOG_H_
@@ -33,7 +24,7 @@ struct NA_ACK{
 #include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
-
+void trtp_init(struct TRTP*);
 #ifdef _COLOR
 /* Want more/other colors? See https://stackoverflow.com/a/3219471 and
  * https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
