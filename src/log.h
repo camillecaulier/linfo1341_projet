@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <zlib.h>
 
 
 #define MAXLEN 512
@@ -25,14 +26,25 @@ struct TRTP{
 					WINDOW: 5;
     uint16_t LENGTH: 16;  //uint16_t
 
-	uint8_t  SEQNEUM: 8;
-    unsigned int CRC1 : 32;
-    char* PAYLOAD[MAXLEN];
-    unsigned int CRC2 : 32;
+	uint8_t  SEQNEUM;
+    uint32_t CRC1 ;
+    char* PAYLOAD;
+    uint32_t CRC2 ;
 
 
 };
 
+typedef struct state_t{
+
+	/* TODO: Your state isnformation could be encoded here. */
+    int state;
+    uint8_t seqnum;
+    struct sockaddr address;
+    socklen_t sck_len;
+    uint8_t window_size;
+   
+} state_t;
+extern state_t s;
 
 
 

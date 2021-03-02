@@ -28,23 +28,52 @@ void display_byte(uint8_t byte)
 
 //On check le data packet et sa taille si c'est plus grand que le payload il faut split
 
-ssize_t send(int sockfd,const void *buf,size_t len, int flags){
-	size_t taille = 0;
-	//init de la data
-	struct TRTP *packet = malloc(sizeof(*packet));
-	packet->TYPE = DATA;
-	memset(packet->PAYLOAD,'\0',sizeof(packet->PAYLOAD));
+struct TRTP *make_packet(void *packet)
+{
+	uint32_t header;
+    struct TRTP *pakage = (struct TRTP*)malloc(sizeof(pakage));
+    memcpy(&header, packet, 4);
+    header = htonl(header);
+    
+    
+    uint8_t trtp[32];
+	int i = 31;
+	for (i = 31; i >= 0; i--) trtp[31-i] = ((header >> i) & 1);
+    //for (int i = 0; i < 32; i++) printf("%d", bits[i]); printf("\n");
+
+    // Type
+	pakage->TYPE = trtp[0] * 2 + trtp[1];
+
+    // Truncated ?
+	pakage->TR = trtp[2];
+    // Window
+	for (i = 0; i < 5; i++) pakage->WINDOW = 2 * pakage->WINDOW + trtp[3 + i];
+
+    // Length
+	for (i = 0; i < 16; i++) pakage->LENGTH = 2 * pakage->LENGTH + trtp[8 + i];
+
+    memcpy(&pakage->SEQNEUM, packet + 2 + pakage->LENGTH, 1);
+   
 	
-	//init du ACK
-	struct TRTP *ack = malloc(sizeof(*ack));
-	ack->TYPE = ACK;
-	memset(ack->PAYLOAD,'\0',sizeof(ack->PAYLOAD));
-	//init du Nack
-	struct TRTP *nack = malloc(sizeof(*nack));
-	nack->TYPE = NACK;
-	memset(nack->PAYLOAD,'\0',sizeof(nack->PAYLOAD));
-	return taille;
-	}
+    // CRC1
+    pakage->CRC1 = crc32(0, packet, 7 + pakage->LENGTH);
+    memcpy(&pakage->CRC1, packet + 7 + pakage->LENGTH, 4);
+    pakage->CRC1 = ntohl(pakage->CRC1);
+
+    // CRC2
+    memcpy(&pakage->CRC2, packet + 11 + pakage->LENGTH, 4);
+    pakage->CRC2 = ntohl(pakage->CRC2);
+	pakage->CRC2 = crc32(0, packet + 11 + 1, pakage->LENGTH);
+
+    // Payload
+	
+    if(pakage->LENGTH > 0) 
+		pakage->PAYLOAD = malloc(pakage->LENGTH);
+    memcpy(pakage->PAYLOAD, packet + 11 ,pakage->LENGTH);
+
+
+    return pakage;
+}
 /**
  * display in byte repsentation the message/data
  */
