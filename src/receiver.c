@@ -89,6 +89,13 @@ int main(int argc, char **argv) {
         fprintf(stderr,"Could not connect the socket after the first message.\n");
         return EXIT_FAILURE;
     }
+    int wait_status = wait_for_client(sfd);
+    if(wait_status<0){
+        fprintf(stderr,"Wait for client failed\n");
+        return EXIT_FAILURE;
+    }
+    receive_package(sfd);
+    close(sfd);
 
 
     return EXIT_SUCCESS;

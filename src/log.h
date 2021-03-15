@@ -41,6 +41,7 @@ int create_socket(struct sockaddr_in6 *source_addr,
                   struct sockaddr_in6 *dest_addr,
                   int dst_port);
 void send_package(const int sfd,char* filename);
+void receive_package(const int sfd);
 
 const char * real_address(const char *address, struct sockaddr_in6 *rval);
 int wait_for_client(int sfd);

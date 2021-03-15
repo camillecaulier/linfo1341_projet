@@ -34,6 +34,7 @@ void dump(const uint8_t *bytes, size_t len) {
     inet_pton(AF_INET6, address, &(rval->sin6_addr));
     return NULL;
 }
+
 int create_socket(struct sockaddr_in6 *source_addr,
                   int src_port,
                   struct sockaddr_in6 *dest_addr,
@@ -89,6 +90,7 @@ int create_socket(struct sockaddr_in6 *source_addr,
 
     return -1;
 }
+
 int wait_for_client(int sfd){
 
     struct sockaddr_in6 client_address;
