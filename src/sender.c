@@ -25,12 +25,14 @@ int main(int argc, char **argv) {
     char *stats_filename = NULL;
     char *receiver_ip = NULL;
     char *receiver_port_err;
+
     uint16_t receiver_port;
 
     while ((opt = getopt(argc, argv, "f:s:h")) != -1) {
         switch (opt) {
         case 'f':
             filename = optarg;
+
             break;
         case 'h':
             return print_usage(argv[0]);
@@ -65,17 +67,29 @@ int main(int argc, char **argv) {
     ERROR("This is not an error, %s", "now let's code!");
     // Now let's code!
 
-    int sock = socket(AF_INET6, SOCK_DGRAM, 0);
 
-    // REGISTER 
+    // REGISTER
+
     struct sockaddr_in6 receiver_addr;
-    memset(&receiver_addr, 0, sizeof(struct sockaddr_in6));
-    receiver_addr.sin6_family = AF_INET6;
-    receiver_addr.sin6_port = htons(receiver_port);
-    inet_pton(AF_INET6, receiver_ip, &receiver_addr.sin6_addr);
-    connect(sock, (const struct sockaddr *) &receiver_addr, sizeof(receiver_addr));
-    char msg[32] = "hello, world!";
-    send(sock, msg, 32, 0);
-    
+    const char *err = real_address(receiver_ip,&receiver_addr);
+    if (err){
+        fprintf(stderr,"Could not resolve hostname %s: %s\n",receiver_ip,err);
+        return EXIT_FAILURE;
+    }
+    int sfd;
+    sfd = create_socket(NULL,-1,&receiver_addr,receiver_port);
+    if(sfd<0){
+        fprintf(stderr,"Could not connect the socket after the first message.\n");
+        return EXIT_FAILURE;
+    }
+    //SOCKET CONNECTED
+    //
+    //
+    //SENDING PAYLOADS
+    send_package(sfd,filename);
+
+
+
+    close(sfd);
     return EXIT_SUCCESS;
 }
