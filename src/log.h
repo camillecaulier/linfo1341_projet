@@ -1,60 +1,58 @@
 /***
  * A set of logging macro and functions that can be used.
  */
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <string.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <zlib.h>
 
-
-#define MAXLEN 512
-#define DATA 2
-#define ACK 1
-#define NACK 3
-
-struct TRTP{
-	
-
-	uint8_t 		TYPE : 2,
-					TR : 1,
-					WINDOW: 5;
-    uint16_t LENGTH: 16;  //uint16_t
-
-	uint8_t  SEQNEUM;
-    uint32_t CRC1 ;
+struct DATA{
+    unsigned int TYPE : 2;
+    unsigned int TR : 1;
+    unsigned int WINDOW: 5;
+    unsigned int LENGTH: 16;  //uint16_t
+    unsigned int SEQNEUM: 8;
+    unsigned int CRC1 : 32;
     char* PAYLOAD;
-    uint32_t CRC2 ;
+    unsigned int CRC2 : 32;
 
 
 };
 
-typedef struct state_t{
+struct NA_ACK{
+    //unsigned int IsAck : 1;// 1 (true) si c'est ack
+    unsigned int TYPE : 2; // 0b10ACK  0b11 NACK
+    unsigned int TR : 1;
+    unsigned int WINDOW : 5;
+//    unsigned int LENGTH : 16;
+    //pas de length dans le nack ou ack
+    //tot = 8 bit
 
-	/* TODO: Your state isnformation could be encoded here. */
-    int state;
-    uint8_t seqnum;
-    struct sockaddr address;
-    socklen_t sck_len;
-    uint8_t window_size;
-   
-} state_t;
-extern state_t s;
+};
+#include <netinet/in.h> /* * sockaddr_in6 */
+#include <sys/types.h> /* sockaddr_in6 */
 
+/* Creates a socket and initialize it
+ * @source_addr: if !NULL, the source address that should be bound to this socket
+ * @src_port: if >0, the port on which the socket is listening
+ * @dest_addr: if !NULL, the destination address to which the socket should send data
+ * @dst_port: if >0, the destination port to which the socket should be connected
+ * @return: a file descriptor number representing the socket,
+ *         or -1 in case of error (explanation will be printed on stderr)
+ */
+int create_socket(struct sockaddr_in6 *source_addr,
+                  int src_port,
+                  struct sockaddr_in6 *dest_addr,
+                  int dst_port);
+void send_package(const int sfd,char* filename);
 
+const char * real_address(const char *address, struct sockaddr_in6 *rval);
+int wait_for_client(int sfd);
 
 #ifndef __LOG_H_
 #define __LOG_H_
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stddef.h>
 
-
-void trtp_init(struct TRTP*);
-ssize_t send(int sockfd,const void *buf,size_t len, int flags);
 #ifdef _COLOR
 /* Want more/other colors? See https://stackoverflow.com/a/3219471 and
  * https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
@@ -98,5 +96,6 @@ void dump(const uint8_t *bytes, size_t len);
 #else
 #define DEBUG_DUMP(bytes, len)
 #endif
+
 
 #endif // __LOG_H_
