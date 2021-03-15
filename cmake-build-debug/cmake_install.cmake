@@ -1,4 +1,4 @@
-# Install script for directory: D:/camille626/Documents/bac_3/linfo1341_reseaux/projet
+# Install script for directory: C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "D:/camille626/Documents/bac_3/linfo1341_reseaux/projet/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

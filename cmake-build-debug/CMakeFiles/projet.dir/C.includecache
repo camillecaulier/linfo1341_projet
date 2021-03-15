@@ -6,11 +6,37 @@
 
 #IncludeRegexTransform: 
 
-D:/camille626/Documents/bac_3/linfo1341_reseaux/projet/src/log.c
+C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/log.c
+stdlib.h
+-
+stdio.h
+-
+string.h
+-
+unistd.h
+-
+sys/types.h
+-
+sys/socket.h
+-
+arpa/inet.h
+-
+fcntl.h
+-
+inttypes.h
+-
+netdb.h
+-
 log.h
-D:/camille626/Documents/bac_3/linfo1341_reseaux/projet/src/log.h
+C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/log.h
+packet.h
+C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/packet.h
 
-D:/camille626/Documents/bac_3/linfo1341_reseaux/projet/src/log.h
+C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/log.h
+netinet/in.h
+-
+sys/types.h
+-
 stdlib.h
 -
 stdio.h
@@ -20,27 +46,57 @@ stdint.h
 stddef.h
 -
 
-D:/camille626/Documents/bac_3/linfo1341_reseaux/projet/src/receiver.c
-stdlib.h
--
-stdio.h
--
-unistd.h
+C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/packet.c
+packet.h
+C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/packet.h
+stddef.h
 -
 stdint.h
 -
+stdio.h
+-
+sys/types.h
+-
+unistd.h
+-
+stdlib.h
+-
 string.h
--
-sys/socket.h
--
-netinet/in.h
 -
 arpa/inet.h
 -
-log.h
-D:/camille626/Documents/bac_3/linfo1341_reseaux/projet/src/log.h
+zlib.h
+-
 
-D:/camille626/Documents/bac_3/linfo1341_reseaux/projet/src/sender.c
+C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/packet.h
+stddef.h
+-
+stdint.h
+-
+stdio.h
+-
+
+C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/receiver.c
+stdlib.h
+-
+stdio.h
+-
+unistd.h
+-
+stdint.h
+-
+string.h
+-
+sys/socket.h
+-
+netinet/in.h
+-
+arpa/inet.h
+-
+log.h
+C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/log.h
+
+C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/sender.c
 stdio.h
 -
 stdlib.h
@@ -58,5 +114,5 @@ netinet/in.h
 arpa/inet.h
 -
 log.h
-D:/camille626/Documents/bac_3/linfo1341_reseaux/projet/src/log.h
+C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/log.h
 
