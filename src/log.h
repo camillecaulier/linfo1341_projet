@@ -98,8 +98,8 @@ void dump(const uint8_t *bytes, size_t len);
 #endif
 
 
-<<<<<<< HEAD
+
 #endif // __LOG_H_
 =======
 #endif // __LOG_H_
->>>>>>> cede42d90725707944736d49fbaf42992f39c1a0
+

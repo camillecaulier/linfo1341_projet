@@ -74,19 +74,22 @@ int main(int argc, char **argv) {
     ERROR("This is not an error, %s", "now let's code!");
 
     // Now let's code!
-    int sock = socket(AF_INET6, SOCK_DGRAM, 0);
+
 
     // REGISTER 
     struct sockaddr_in6 listener_addr;
-    memset(&listener_addr, 0, sizeof(struct sockaddr_in6));
-    listener_addr.sin6_family = AF_INET6;
-    listener_addr.sin6_port = htons(listen_port);
-    inet_pton(AF_INET6, listen_ip, &listener_addr.sin6_addr);
+    const char *err = real_address(listen_ip,&listener_addr);
+    if (err){
+        fprintf(stderr,"Could not resolve hostname %s: %s\n",listen_ip,err);
+        return EXIT_FAILURE;
+    }
+    int sfd;
+    sfd = create_socket(NULL,-1,&listener_addr,listen_port);
+    if(sfd<0){
+        fprintf(stderr,"Could not connect the socket after the first message.\n");
+        return EXIT_FAILURE;
+    }
 
-    bind(sock, (const struct sockaddr *) &listener_addr, sizeof(listener_addr));
-    char msg[32];
-    recv(sock, msg, 32, 0);
-    printf("%s\n", msg);
 
     return EXIT_SUCCESS;
 }
