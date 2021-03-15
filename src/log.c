@@ -11,8 +11,10 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <netdb.h>
-#include "log.h"
+//#include "log.h"
 #include "packet.h"
+
+
 /* Prints `len` bytes starting from `bytes` to stderr */
 void dump(const uint8_t *bytes, size_t len) {
     for (size_t i = 0; i < len;) {
