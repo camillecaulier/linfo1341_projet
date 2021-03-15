@@ -6,6 +6,7 @@
 
 #IncludeRegexTransform: 
 
+<<<<<<< HEAD
 C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/log.c
 stdlib.h
 -
@@ -36,6 +37,26 @@ C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/log.h
 netinet/in.h
 -
 sys/types.h
+=======
+D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/log.c
+log.h
+D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/log.h
+
+D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/log.h
+stdlib.h
+-
+stdio.h
+-
+unistd.h
+-
+netdb.h
+-
+netinet/in.h
+-
+sys/socket.h
+-
+string.h
+>>>>>>> cede42d90725707944736d49fbaf42992f39c1a0
 -
 stdlib.h
 -
@@ -46,6 +67,7 @@ stdint.h
 stddef.h
 -
 
+<<<<<<< HEAD
 C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/packet.c
 packet.h
 C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/packet.h
@@ -77,6 +99,9 @@ stdio.h
 -
 
 C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/receiver.c
+=======
+D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/receiver.c
+>>>>>>> cede42d90725707944736d49fbaf42992f39c1a0
 stdlib.h
 -
 stdio.h
@@ -94,9 +119,15 @@ netinet/in.h
 arpa/inet.h
 -
 log.h
+<<<<<<< HEAD
 C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/log.h
 
 C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/sender.c
+=======
+D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/log.h
+
+D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/sender.c
+>>>>>>> cede42d90725707944736d49fbaf42992f39c1a0
 stdio.h
 -
 stdlib.h
@@ -114,5 +145,9 @@ netinet/in.h
 arpa/inet.h
 -
 log.h
+<<<<<<< HEAD
 C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/log.h
+=======
+D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/log.h
+>>>>>>> cede42d90725707944736d49fbaf42992f39c1a0
 

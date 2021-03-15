@@ -52,10 +52,17 @@ RM = "C:\Program Files\JetBrains\CLion 2020.3.2\bin\cmake\win\bin\cmake.exe" -E 
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
+<<<<<<< HEAD
 CMAKE_SOURCE_DIR = "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet"
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug"
+=======
+CMAKE_SOURCE_DIR = D:\camille626\Documents\bac_3\linfo1341_reseaux\linfo1341_projet
+
+# The top-level build directory on which CMake was run.
+CMAKE_BINARY_DIR = D:\camille626\Documents\bac_3\linfo1341_reseaux\linfo1341_projet\cmake-build-debug
+>>>>>>> cede42d90725707944736d49fbaf42992f39c1a0
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -84,9 +91,15 @@ rebuild_cache\fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
+<<<<<<< HEAD
 	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug\CMakeFiles" "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug\CMakeFiles\progress.marks"
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) all
 	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug\CMakeFiles" 0
+=======
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\camille626\Documents\bac_3\linfo1341_reseaux\linfo1341_projet\cmake-build-debug\CMakeFiles D:\camille626\Documents\bac_3\linfo1341_reseaux\linfo1341_projet\cmake-build-debug\CMakeFiles\progress.marks
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 all
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\camille626\Documents\bac_3\linfo1341_reseaux\linfo1341_projet\cmake-build-debug\CMakeFiles 0
+>>>>>>> cede42d90725707944736d49fbaf42992f39c1a0
 .PHONY : all
 
 # The main clean target

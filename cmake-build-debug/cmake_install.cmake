@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Install script for directory: C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet
+=======
+# Install script for directory: D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet
+>>>>>>> cede42d90725707944736d49fbaf42992f39c1a0
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +44,9 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
+<<<<<<< HEAD
 file(WRITE "C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+=======
+file(WRITE "D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+>>>>>>> cede42d90725707944736d49fbaf42992f39c1a0
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
