@@ -3,9 +3,10 @@ file(REMOVE_RECURSE
   "CMakeFiles/projet.dir/src/packet.c.obj"
   "CMakeFiles/projet.dir/src/receiver.c.obj"
   "CMakeFiles/projet.dir/src/sender.c.obj"
-  "libprojet.dll.a"
+  "CMakeFiles/projet.dir/src/trtp.c.obj"
   "projet.exe"
   "projet.exe.manifest"
+  "projet.lib"
   "projet.pdb"
 )
 
