@@ -131,6 +131,7 @@ void send_package(int sfd,char*filename){
 
     struct pollfd poll_files_descriptors[2];
     int stdin_stdout;
+    int available_windows = 1;
     pkt_t *send_packet,*rcv_packet;
     pkt_new(send_packet);
     pkt_set_type(send_packet, PTYPE_DATA);
@@ -180,11 +181,10 @@ void send_package(int sfd,char*filename){
         //check if something in the stdin and send to socket
         if(poll_files_descriptors[0].revents & POLLIN){
             //readable et il y qqch
-            while(pkt_get_window(send_packet)==0){}
-//            n = read(STDIN_FILENO, (void *) buffer, 1023);
+            while(available_windows ==0){}
             memset((void *) buffer , 0 , buffer_size);
             n = fread(buffer , 1, buffer_size, fptr);
-            if ( feof(stdin)){
+            if ( feof(fptr)){
                 fprintf(stderr , "(read _write_loop) end of file");
                 return;
             }
@@ -192,7 +192,7 @@ void send_package(int sfd,char*filename){
                 fprintf(stderr, "nothing read ");
             }
             pkt_encode(send_packet,buffer,n);
-            pkt_set_window(send_packet,pkt_get_window(send_packet)-1);
+            available_windows --;
             //send to socket
             int send_status = send(sfd, send_packet,sizeof(struct pkt_t*), 0 );
             if(send_status == -1 ){
@@ -210,6 +210,10 @@ void send_package(int sfd,char*filename){
             pkt_decode(buffer,buffer_size,rcv_packet);
             pkt_set_window(send_packet,pkt_get_window(send_packet)+1);
             pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
+            available_windows = pkt_get_window(rcv_packet);
+            if(pkt_get_type(rcv_packet) == PTYPE_NACK && pkt_get_tr(rcv_packet) == 1){
+                //renvoyer le packet avec le seqnum rcv->seqnum
+            }
         }
     }
     fclose(fptr);
@@ -242,9 +246,10 @@ void receive_package(const int sfd){
             fflush(stdout);
         }
         pkt_decode(buffer,buffer_size,rcv_packet);
-        //cas fin
+        //cas tronqué
         if(rcv_packet->tr == 1){
             pkt_set_type(send_packet,PTYPE_NACK);
+            pkt_set_seqnum(pkt_get_seqnum(rcv_packet),send_packet);
             pkt_encode(send_packet,NULL,0);
             send(sfd, send_packet,sizeof(struct pkt_t*), 0 );
         }
