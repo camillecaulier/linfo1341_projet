@@ -11,12 +11,12 @@
 #include "real_address.h"
 #include "create_socket.h"
 #include "wait_for_client.h"
-
+#include "trtp.h"
 int print_usage(char *prog_name) {
     ERROR("Usage:\n\t%s [-s stats_filename] listen_ip listen_port", prog_name);
     return EXIT_FAILURE;
 }
-int check
+
 
 int check_length(struct DATA *data){
     if(data->LENGTH > 0b1000000000){
@@ -97,6 +97,7 @@ int main(int argc, char **argv) {
         fprintf(stderr,"Wait for client failed\n");
         return EXIT_FAILURE;
     }
+
     receive_package(sfd);
     close(sfd);
 
