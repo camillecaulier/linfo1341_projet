@@ -27,10 +27,10 @@ int wait_for_client(int sfd){
     }
     fprintf(stderr,"buffer : %s\n",buffer);
     buffer[response_status] = '\0';
+
     pkt_t *received_packet = pkt_new();
-
-
     pkt_decode(buffer,response_status,received_packet);
+
     int connect_status =connect(sfd, (struct sockaddr *)&client_address, sizeof(client_address));
     //error here
     if(connect_status == -1){
@@ -38,7 +38,7 @@ int wait_for_client(int sfd){
         fflush(stdout);
         return -1;
     }
-    fprintf(stderr , "%s\n", pkt_get_payload(received_packet));
+    fprintf(stderr , "payload  : %s\n", pkt_get_payload(received_packet));
     return 0;
 }
 

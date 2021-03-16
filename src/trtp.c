@@ -30,9 +30,10 @@ void send_package(int sfd,char*filename){
     struct pollfd poll_files_descriptors[2];
     int stdin_stdout;
     int available_windows = 1;
+
     pkt_t *send_packet = pkt_new();
     pkt_t *rcv_packet;
-    pkt_set_type(send_packet, PTYPE_DATA);
+    pkt_set_type(send_packet, PTYPE_DATA); //1 = data
     pkt_set_tr(send_packet, 0 );
     pkt_set_window(send_packet, 31);
     pkt_set_seqnum(send_packet, 0);
@@ -71,27 +72,35 @@ void send_package(int sfd,char*filename){
 
 
         //check if something in the stdin and send to socket
-        if(poll_files_descriptors[0].revents & POLLIN){
+        if(poll_files_descriptors[0].revents & POLLIN) {
             //readable et il y qqch
-            memset((void *) buffer , 0 , buffer_size);
-            n = fread(buffer , 1, buffer_size, fptr);
-            if ( feof(fptr)){
-                fprintf(stderr , "(read _write_loop) end of file");
+            memset((void *) buffer, 0, buffer_size);
+            n = fread(buffer, 1, buffer_size, fptr);
+            if (feof(fptr)) {
+                fprintf(stderr, "(read _write_loop) end of file");
                 return;
             }
-            if(n == 0){
+            if (n == 0) {
                 fprintf(stderr, "nothing read ");
             }
-            if(pkt_set_payload(send_packet,buffer,n)!= PKT_OK)
-                fprintf(stderr,"erreur de set payload \n");
-            char data[16+n];
+            if (pkt_set_payload(send_packet, buffer, n) != PKT_OK){
+                fprintf(stderr, "erreur de set payload \n");
+            }
+
+            int data_initial = 16 + n;
+            char data[data_initial];
             int data_size = 0;
 
             fprintf(stderr,"length : %d\n",pkt_get_length(send_packet));
-            if(pkt_encode(send_packet,buffer,(size_t *)&data_size) !=PKT_OK){
+            if(pkt_encode(send_packet, data ,(size_t *)&data_size) !=PKT_OK){
                 fprintf(stderr,"erreur encode\n");
             }
+            //check if initiated size is the same as sent size
+            if(data_initial!= data_size){
+                perror("error with allocating and memory encoding \n");
 
+            }
+            fprintf(stderr, "first byte: %d \n", data[0]);
             fprintf(stderr,"taille de data %d\n",data_size);
             fprintf(stderr,"buff = %s\n",data);
             fprintf(stderr,"type de la data : %d \n",pkt_get_type(send_packet));
