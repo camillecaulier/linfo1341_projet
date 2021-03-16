@@ -214,5 +214,51 @@ void send_package(int sfd,char*filename){
     }
     fclose(fptr);
 }
+void receive_package(const int sfd){
+    struct pollfd poll_files_descriptors[1];
+    int stdin_stdout;
+    int seqnum;
+    poll_files_descriptors[1].fd  = sfd;
+    poll_files_descriptors[1].events = POLLIN;
+    pkt_t *send_packet,*rcv_packet;
+    pkt_new(send_packet);
+    pkt_set_type(send_packet, PTYPE_NACK);
+    pkt_set_tr(send_packet, 1 );
+    pkt_set_window(send_packet, 0);
+    pkt_set_seqnum(send_packet, 0);
+    pkt_set_timestamp(send_packet, 120);
+    char buffer[1024];
+    int buffer_size = 1024;
+    fcntl(sfd, F_SETFL, O_NONBLOCK);
+    fcntl(1, F_SETFL, O_NONBLOCK);
+    while(1){
+        stdin_stdout = poll(poll_files_descriptors, 1 , -1);
+
+        if(poll_files_descriptors[1].revents & POLLIN ){//
+
+        int sent_status = recv(sfd, rcv_packet, sizeof (struct pkt_t*), 0);
+        if(sent_status == -1){
+            fprintf(stderr,"nothing sent");
+            fflush(stdout);
+        }
+        pkt_decode(buffer,buffer_size,rcv_packet);
+        //cas fin
+        if(rcv_packet->tr == 0){
+            pkt_set_type(send_packet,PTYPE_ACK);
+            pkt_encode(send_packet,NULL,0);
+            send(sfd, send_packet,sizeof(struct pkt_t*), 0 );
+            return;
+        }
+        //insere dans la ll et renvoie
+        seqnum = rcv_packet->seqnum;
+        pkt_set_seqnum(send_packet,seqnum)
+    }
+
+    }
+
+
+
+
+}
 
 
