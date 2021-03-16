@@ -10,7 +10,7 @@
 #include <inttypes.h>
 #include <netdb.h>
 #include <fcntl.h>
-
+#include <sys/wait.h>
 #include "log.h"
 #include "real_address.h"
 #include "create_socket.h"
@@ -36,6 +36,8 @@ void send_package(int sfd,char*filename){
 
     struct pollfd poll_files_descriptors[2];
     int stdin_stdout;
+    int receiver_window_space= 0;
+    int receiver_window_max = 1;
 
 
     pkt_t *send_packet = pkt_new();
@@ -46,6 +48,7 @@ void send_package(int sfd,char*filename){
     pkt_set_seqnum(send_packet, 0);
     pkt_set_timestamp(send_packet, 120);
 
+    int seqnum = pkt_get_seqnum(send_packet);
 
 
     int buffer_size = 512;
@@ -57,13 +60,13 @@ void send_package(int sfd,char*filename){
 //    while( !feof(stdin)){
     while(1){
 
+
         poll_files_descriptors[0].fd  = fd;
         poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
         //POLLOUR //Alert me when I can send() data to this socket without blocking.
         poll_files_descriptors[1].fd  = sfd;
         poll_files_descriptors[1].events = POLLIN;
-
-        stdin_stdout = poll(poll_files_descriptors, 2 , -1);
+        stdin_stdout = poll(poll_files_descriptors, 2 , 5000);
         n = 0;
         if(stdin_stdout == -1){
             perror("poll not working ");
@@ -80,7 +83,13 @@ void send_package(int sfd,char*filename){
 
         //check if something in the stdin and send to socket
         if(poll_files_descriptors[0].revents & POLLIN) {
-            while (pkt_get_window(send_packet) == 0){}
+
+            receiver_window_space++;
+            if (receiver_window_space>receiver_window_max){
+               fprintf(stderr,"receiver window : %d \n",receiver_window_space);
+                receiver_window_space--;
+                continue;
+            }
             //readable et il y qqch
             memset((void *) buffer, 0, buffer_size);
             n = fread(buffer, 1, buffer_size, fptr);
@@ -92,6 +101,7 @@ void send_package(int sfd,char*filename){
                 fprintf(stderr, "erreur de set payload \n");
             }
 
+
             int data_initial = 16 + n;
             char data[data_initial];
             int data_size = 16+n;
@@ -100,6 +110,7 @@ void send_package(int sfd,char*filename){
             if(pkt_encode(send_packet, data ,(size_t *)&data_size) !=PKT_OK){
                 fprintf(stderr,"erreur encode\n");
             }
+
             //check if initiated size is the same as sent size
             if(data_initial!= data_size){
                 perror("error with allocating and memory encoding \n");
@@ -110,12 +121,8 @@ void send_package(int sfd,char*filename){
             fprintf(stderr,"buff = %s\n",data);
             fprintf(stderr,"type de la data : %d \n",pkt_get_type(send_packet));
             fprintf(stderr,"seqnum de la data : %d \n",pkt_get_seqnum(send_packet));
-
-
             //send to socket
-
             fprintf(stderr,"buffer sent : %s\n",pkt_get_payload(send_packet));
-
             int send_status = send(sfd,data,data_size, 0 );
             if(send_status == -1 ){
                 fprintf(stderr, "nothing sent");
@@ -124,7 +131,6 @@ void send_package(int sfd,char*filename){
 
             memset((void *) buffer , 0 , buffer_size);
         }
-
         if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
             char recv_buff[1024];
             int recv_status = recv(sfd, recv_buff, 1024, 0);
@@ -134,10 +140,25 @@ void send_package(int sfd,char*filename){
             }
             fprintf(stderr,"Ack received \n");
             pkt_decode(recv_buff,recv_status,rcv_packet);
-            pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
+
+
+            //ACK
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 pkt_set_window(send_packet,pkt_get_window(rcv_packet));
+                receiver_window_max = pkt_get_window(rcv_packet);
+                receiver_window_space--;
+                //setting new seqnum for send_packet
+                pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
+            }
 
+            //NACK
+            else if(pkt_get_type(rcv_packet) == PTYPE_NACK && pkt_get_tr(rcv_packet) == 1){
+                memset((void *) buffer , 0 , buffer_size);
+            }
+
+            else{
+                perror("Sender received data type \n");
+                return;
             }
 
         }

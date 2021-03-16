@@ -21,13 +21,7 @@ int print_usage(char *prog_name) {
 }
 
 
-int check_length(struct DATA *data){
-    if(data->LENGTH > 0b1000000000){
-        printf("message has length longer than 512");
-        return -1;
-    }
-    return 0;
-}
+
 
 void receive_package(const int sfd){
 
