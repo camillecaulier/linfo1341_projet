@@ -40,14 +40,17 @@ int wait_for_client(int sfd){
         return -1;
     }
     pkt_set_type(sent_ack,PTYPE_ACK);
-    pkt_set_window(sent_ack,32);
-    pkt_set_seqnum(sent_ack,(pkt_get_seqnum(received_packet)+1)%255);
-        char ack[12];
-        int size = 0;
-        pkt_encode(sent_ack,ack,(size_t *)&size);
-        int sent_status = send(sfd, ack,size, 0 );
-        fprintf(stderr,"le message est : %s \n",pkt_get_payload(received_packet));
-        fprintf(stderr , "sent ack  : %d\n", sent_status);
+    pkt_set_window(sent_ack,31);
+    pkt_set_seqnum(sent_ack,pkt_get_seqnum(received_packet));
+    char ack[12];
+    int size = 0;
+    pkt_encode(sent_ack,ack,(size_t *)&size);
+    int sent_status = send(sfd, ack,size, 0 );
+    if(sent_status == -1){
+        perror("we sent fuck all");
+    }
+    fprintf(stderr,"le message est : %s \n",pkt_get_payload(received_packet));
+    fprintf(stderr , "sent ack  : %d\n", sent_status);
     return 0;
 }
 

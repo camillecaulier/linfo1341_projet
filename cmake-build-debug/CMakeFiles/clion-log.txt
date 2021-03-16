@@ -1,4 +1,4 @@
-"C:\Program Files\JetBrains\CLion 2020.3.2\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - NMake Makefiles" "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet"
+"C:\Users\camille626\CLion 2020.3.2\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" D:\camille626\Documents\bac_3\linfo1341_reseaux\linfo1341_projet
 -- Configuring done
 -- Generating done
--- Build files have been written to: C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/cmake-build-debug
+-- Build files have been written to: D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/cmake-build-debug

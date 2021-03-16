@@ -86,7 +86,7 @@ pkt_status_code pkt_decode(const char *data, const size_t len, pkt_t *pkt)
 
     //E_TYPE
     uint8_t type = (data[0]>> 6) & 0x03;
-    fprintf(stderr,"%d\n",type);
+    //fprintf(stderr,"%d\n",type);
     //size for ack and nack
     if((type == PTYPE_ACK || type == PTYPE_NACK) && len < 10){
         perror("no header(decode) ");
