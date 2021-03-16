@@ -304,6 +304,33 @@ src/trtp.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\projet.dir\build.make CMakeFiles/projet.dir/src/trtp.c.s
 .PHONY : src/trtp.c.s
 
+src/wait_for_client.obj: src/wait_for_client.c.obj
+
+.PHONY : src/wait_for_client.obj
+
+# target to build an object file
+src/wait_for_client.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projet.dir\build.make CMakeFiles/projet.dir/src/wait_for_client.c.obj
+.PHONY : src/wait_for_client.c.obj
+
+src/wait_for_client.i: src/wait_for_client.c.i
+
+.PHONY : src/wait_for_client.i
+
+# target to preprocess a source file
+src/wait_for_client.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projet.dir\build.make CMakeFiles/projet.dir/src/wait_for_client.c.i
+.PHONY : src/wait_for_client.c.i
+
+src/wait_for_client.s: src/wait_for_client.c.s
+
+.PHONY : src/wait_for_client.s
+
+# target to generate assembly for a file
+src/wait_for_client.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projet.dir\build.make CMakeFiles/projet.dir/src/wait_for_client.c.s
+.PHONY : src/wait_for_client.c.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -331,6 +358,9 @@ help:
 	@echo ... src/trtp.obj
 	@echo ... src/trtp.i
 	@echo ... src/trtp.s
+	@echo ... src/wait_for_client.obj
+	@echo ... src/wait_for_client.i
+	@echo ... src/wait_for_client.s
 .PHONY : help
 
 

@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/receiver.c" "D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/cmake-build-debug/CMakeFiles/projet.dir/src/receiver.c.obj"
   "D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/sender.c" "D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/cmake-build-debug/CMakeFiles/projet.dir/src/sender.c.obj"
   "D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/trtp.c" "D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/cmake-build-debug/CMakeFiles/projet.dir/src/trtp.c.obj"
+  "D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/wait_for_client.c" "D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/cmake-build-debug/CMakeFiles/projet.dir/src/wait_for_client.c.obj"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

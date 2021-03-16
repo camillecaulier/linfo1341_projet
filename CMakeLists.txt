@@ -14,4 +14,4 @@ add_executable(projet
         tests/simple_test.sh
         src/packet.c
         src/packet.h
-        src/trtp.c src/trtp.h src/create_socket.c)
+        src/trtp.c src/trtp.h src/create_socket.c src/wait_for_client.c)

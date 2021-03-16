@@ -112,6 +112,12 @@
 		<Unit filename="D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/trtp.h">
 			<Option target="projet"/>
 		</Unit>
+		<Unit filename="D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/wait_for_client.c">
+			<Option target="projet"/>
+		</Unit>
+		<Unit filename="D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/src/wait_for_client.h">
+			<Option target="projet"/>
+		</Unit>
 		<Unit filename="D:/camille626/Documents/bac_3/linfo1341_reseaux/linfo1341_projet/tests/run_tests.sh">
 			<Option target="projet"/>
 		</Unit>
