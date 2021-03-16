@@ -260,7 +260,9 @@ pkt_status_code pkt_encode(const pkt_t* pkt, char *buf, size_t *len)
 
     ptypes_t type  = pkt_get_type(pkt);
 
+
     uint8_t new_type  = type <<6 ; // take the first six bytes
+
 
 
     uint8_t tr = pkt_get_tr(pkt);
@@ -275,17 +277,20 @@ pkt_status_code pkt_encode(const pkt_t* pkt, char *buf, size_t *len)
 
 
 
+
     if(type == PTYPE_DATA) {
 
         int length = pkt_get_length(pkt);
         uint16_t length_to_buffer = htons(pkt_get_length(pkt));// don't forget to transform to network byte order
         memcpy(buf + 1, &length_to_buffer, 2);
 
+
         uint8_t seqnum = pkt_get_seqnum(pkt);
         memcpy(buf + 3, &seqnum, 1);
 
         uint32_t timestamp = pkt_get_timestamp(pkt);
         memcpy(buf + 4, &timestamp, 4);
+
 
         //now for the crc1
         uint32_t crc1 = crc32(0L, Z_NULL, 0);
@@ -303,6 +308,7 @@ pkt_status_code pkt_encode(const pkt_t* pkt, char *buf, size_t *len)
             crc2 = htonl(crc2);
 
             memcpy(buf + 12 + length, &crc2, 4);
+
             *len = 16 + length;
         }
     }

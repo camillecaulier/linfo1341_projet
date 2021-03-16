@@ -84,18 +84,21 @@ void send_package(int sfd,char*filename){
             }
             if(pkt_set_payload(send_packet,buffer,n)!= PKT_OK)
                 fprintf(stderr,"erreur de set payload \n");
-            char data[1024];
-            int data_size = 1024;
+            char data[16+n];
+            int data_size = 0;
+
             fprintf(stderr,"length : %d\n",pkt_get_length(send_packet));
             if(pkt_encode(send_packet,buffer,(size_t *)&data_size) !=PKT_OK){
                 fprintf(stderr,"erreur encode\n");
             }
+
+            fprintf(stderr,"taille de data %d\n",data_size);
+            fprintf(stderr,"buff = %s\n",data);
             fprintf(stderr,"type de la data : %d \n",pkt_get_type(send_packet));
             available_windows --;
 
             //send to socket
-            for(int i = 0 ; i<100; i++)
-                fprintf(stderr, "data[%d] : %c\n",i,data[i]);
+
             fprintf(stderr,"buffer sent : %s\n",pkt_get_payload(send_packet));
 
             int send_status = send(sfd,data,data_size, 0 );
