@@ -108,6 +108,7 @@ void send_package(int sfd,char*filename){
             fprintf(stderr,"taille de data %d\n",data_size);
             fprintf(stderr,"buff = %s\n",data);
             fprintf(stderr,"type de la data : %d \n",pkt_get_type(send_packet));
+            fprintf(stderr,"seqnum de la data : %d \n",pkt_get_seqnum(send_packet));
             available_windows --;
 
             //send to socket
@@ -122,6 +123,7 @@ void send_package(int sfd,char*filename){
 
             memset((void *) buffer , 0 , buffer_size);
         }
+
         if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
             char recv_buff[1024];
             int recv_status = recv(sfd, recv_buff, 1024, 0);
@@ -131,6 +133,7 @@ void send_package(int sfd,char*filename){
             }
             fprintf(stderr,"Ack received \n");
             pkt_decode(recv_buff,recv_status,rcv_packet);
+            pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
             if(pkt_get_type(rcv_packet) == PTYPE_NACK && pkt_get_tr(rcv_packet) == 1){
                 //renvoyer le packet avec le seqnum rcv->seqnum
             }
