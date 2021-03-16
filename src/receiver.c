@@ -8,6 +8,9 @@
 #include <arpa/inet.h>
 
 #include "log.h"
+#include "real_address.h"
+#include "create_socket.h"
+#include "wait_for_client.h"
 
 int print_usage(char *prog_name) {
     ERROR("Usage:\n\t%s [-s stats_filename] listen_ip listen_port", prog_name);

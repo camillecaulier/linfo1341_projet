@@ -14,96 +14,6 @@
 //#include "log.h"
 #include "packet.h"
 #include "trtp.h"
-const char * real_address(const char *address, struct sockaddr_in6 *rval)
-{
-    memset(rval, 0, sizeof(*rval));
-    inet_pton(AF_INET6, address, &(rval->sin6_addr));
-    return NULL;
-}
-
-int create_socket(struct sockaddr_in6 *source_addr,
-                  int src_port,
-                  struct sockaddr_in6 *dest_addr,
-                  int dst_port){
-
-    int sock = socket(AF_INET6, SOCK_DGRAM, 0);
-    if (sock == -1){
-        fprintf(stderr , "(create socket)erreur socket\n");
-
-        return -1;
-    }
-
-    if(source_addr != NULL ){
-
-
-        source_addr->sin6_family = AF_INET6;
-        if(src_port >= 0){
-            source_addr->sin6_port = htons(src_port);
-        }
-
-
-        int bind_st = bind(sock, (struct sockaddr *)source_addr, sizeof(*source_addr));
-
-        if(bind_st == -1){
-            fprintf(stderr ,"(create socket)error bind");
-            perror("hello");
-
-            return -1;
-        }
-
-        return sock;
-    }
-
-
-    else if (dest_addr != NULL){
-
-        dest_addr->sin6_family = AF_INET6;
-        if(dst_port >= 0 ){
-            dest_addr->sin6_port = htons(dst_port);
-        }
-
-
-        int connection_status = connect(sock, (struct sockaddr *) dest_addr, sizeof(*dest_addr));
-        if(connection_status == -1){
-            //printf("erreur connect");
-            fprintf(stderr, "unable to connect (create a socket) \n");
-
-            return -1;
-        }
-
-        return sock;
-    }
-
-    return -1;
-}
-
-int wait_for_client(int sfd){
-
-    struct sockaddr_in6 client_address;
-    int len;
-    char buffer[1024];
-
-    len = sizeof(client_address);
-    int response_status = recvfrom(sfd, buffer, 1024, MSG_PEEK, (struct sockaddr*)&client_address, (socklen_t *) & len);
-    if(response_status < 0){
-        fprintf(stderr, "fail of resonse (wait for client)");
-        fflush(stdout);
-        return -1;
-    }
-    buffer[response_status] = '\0';
-
-
-    int connect_status =connect(sfd, (struct sockaddr *)&client_address, sizeof(client_address));
-    //error here
-    if(connect_status == -1){
-        fprintf(stderr, "failed to connect to client ( wait for client) \n");
-        fflush(stdout);
-        return -1;
-    }
-    //fprintf(stderr , "%s\n", buffer);
-    return 0;
-}
-
 
 
 void send_package(int sfd,char*filename){
@@ -239,9 +149,6 @@ void receive_package(const int sfd){
         }
 
     }
-
-
-
 
 }
 

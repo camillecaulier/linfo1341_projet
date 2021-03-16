@@ -11,4 +11,7 @@ add_executable(projet
         src/receiver.c
         src/sender.c
         tests/run_tests.sh
-        tests/simple_test.sh src/packet.c src/packet.h src/trtp.c src/trtp.h)
+        tests/simple_test.sh
+        src/packet.c
+        src/packet.h
+        src/trtp.c src/trtp.h src/create_socket.c)

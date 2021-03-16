@@ -8,6 +8,9 @@
 #include <arpa/inet.h>
 
 #include "log.h"
+#include "real_address.h"
+#include "create_socket.h"
+#include "wait_for_client.h"
 
 #define BUFF_LEN 
 
