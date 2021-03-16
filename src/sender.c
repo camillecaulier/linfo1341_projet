@@ -36,13 +36,13 @@ void send_package(int sfd,char*filename){
 
     struct pollfd poll_files_descriptors[2];
     int stdin_stdout;
-    int available_windows = 1;
+
 
     pkt_t *send_packet = pkt_new();
     pkt_t *rcv_packet = pkt_new();
     pkt_set_type(send_packet, PTYPE_DATA); //1 = data
     pkt_set_tr(send_packet, 0 );
-    pkt_set_window(send_packet, 31);
+    pkt_set_window(send_packet, 1);
     pkt_set_seqnum(send_packet, 0);
     pkt_set_timestamp(send_packet, 120);
 
@@ -80,6 +80,7 @@ void send_package(int sfd,char*filename){
 
         //check if something in the stdin and send to socket
         if(poll_files_descriptors[0].revents & POLLIN) {
+            while (pkt_get_window(send_packet) == 0){}
             //readable et il y qqch
             memset((void *) buffer, 0, buffer_size);
             n = fread(buffer, 1, buffer_size, fptr);
@@ -109,7 +110,7 @@ void send_package(int sfd,char*filename){
             fprintf(stderr,"buff = %s\n",data);
             fprintf(stderr,"type de la data : %d \n",pkt_get_type(send_packet));
             fprintf(stderr,"seqnum de la data : %d \n",pkt_get_seqnum(send_packet));
-            available_windows --;
+
 
             //send to socket
 
@@ -134,9 +135,11 @@ void send_package(int sfd,char*filename){
             fprintf(stderr,"Ack received \n");
             pkt_decode(recv_buff,recv_status,rcv_packet);
             pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
-            if(pkt_get_type(rcv_packet) == PTYPE_NACK && pkt_get_tr(rcv_packet) == 1){
-                //renvoyer le packet avec le seqnum rcv->seqnum
+            if(pkt_get_type(rcv_packet) == PTYPE_ACK){
+                pkt_set_window(send_packet,pkt_get_window(rcv_packet));
+
             }
+
         }
         if(feof(fptr))
             return;

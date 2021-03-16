@@ -34,6 +34,7 @@ void receive_package(const int sfd){
     struct pollfd poll_files_descriptors[1];
     int stdin_stdout;
     int seqnum;
+    int avalaible_window = 32;
     poll_files_descriptors[0].fd  = sfd;
     poll_files_descriptors[0].events = POLLIN;
     pkt_t *send_packet = pkt_new();
@@ -58,7 +59,10 @@ void receive_package(const int sfd){
                 fprintf(stderr,"nothing sent");
                 fflush(stdout);
             }
+            avalaible_window --;
+
             pkt_decode(buffer,receive_status,rcv_packet);
+            pkt_set_window(rcv_packet,pkt_get_window(send_packet));
             fprintf(stderr,"taille du message recu : %d\n",receive_status);
             fprintf(stderr,"message recu : %s\n",pkt_get_payload(rcv_packet));
             char ack[12];
