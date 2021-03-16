@@ -6,12 +6,15 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <poll.h>
+#include <netdb.h>
+#include <fcntl.h>
 
 #include "log.h"
 #include "real_address.h"
 #include "create_socket.h"
 #include "wait_for_client.h"
-#include "trtp.h"
+#include "packet.h"
 int print_usage(char *prog_name) {
     ERROR("Usage:\n\t%s [-s stats_filename] listen_ip listen_port", prog_name);
     return EXIT_FAILURE;
@@ -26,7 +29,55 @@ int check_length(struct DATA *data){
     return 0;
 }
 
+void receive_package(const int sfd){
 
+    struct pollfd poll_files_descriptors[1];
+    int stdin_stdout;
+    int seqnum;
+    poll_files_descriptors[0].fd  = sfd;
+    poll_files_descriptors[0].events = POLLIN;
+    pkt_t *send_packet = pkt_new();
+    pkt_t *rcv_packet = pkt_new();
+
+    char buffer[1050];
+    int buffer_size = 1050;
+    fcntl(sfd, F_SETFL, O_NONBLOCK);
+    fcntl(1, F_SETFL, O_NONBLOCK);
+
+
+    while(1){
+        poll_files_descriptors[0].fd  = sfd;
+        poll_files_descriptors[0].events = POLLIN;
+        stdin_stdout = poll(poll_files_descriptors, 1 , -1);
+        fprintf(stderr,"im here\n");
+        memset((void *) buffer, 0, buffer_size);
+        if(poll_files_descriptors[0].revents & POLLIN ){
+            memset((void *) buffer, 0, buffer_size);
+            int receive_status = recv(sfd, buffer, buffer_size, 0);
+            if(receive_status == -1){
+                fprintf(stderr,"nothing sent");
+                fflush(stdout);
+            }
+            pkt_decode(buffer,receive_status,rcv_packet);
+            fprintf(stderr,"taille du message recu : %d\n",receive_status);
+            fprintf(stderr,"message recu : %s\n",pkt_get_payload(rcv_packet));
+            char ack[12];
+            int size = 0;
+            pkt_set_type(send_packet,PTYPE_ACK);
+            pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet)+1%255);
+            pkt_encode(send_packet,ack,(size_t *)&size);
+            int sent_status = send(sfd, ack,size, 0 );
+            fprintf(stderr , "sent ack  : %d\n", sent_status);
+            //insere dans la ll et renvoie
+            memset((void *) buffer, 0, buffer_size);
+
+        }
+
+
+    }
+
+
+}
 
 
 // gcc receiver.c -o receiver
