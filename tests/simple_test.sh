@@ -6,8 +6,8 @@ rm -f received_file input_file
 # Fichier au contenu aléatoire de 512 octets
 dd if=/dev/urandom of=input_file bs=1 count=512 &> /dev/null
 
-valgrind_sender=""
-valgrind_receiver=""
+valgrind_sender="./sender ::1 123456"
+valgrind_receiver="./receiver ::1 123456"
 if [ ! -z "$VALGRIND" ] ; then
     valgrind_sender="valgrind --leak-check=full --log-file=valgrind_sender.log"
     valgrind_receiver="valgrind --leak-check=full --log-file=valgrind_receiver.log"
@@ -17,7 +17,7 @@ fi
 $valgrind ./receiver -f received_file :: 2456  2> receiver.log &
 receiver_pid=$!
 
-cleanup()
+
 {
     kill -9 $receiver_pid
     kill -9 $link_pid
