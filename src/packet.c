@@ -10,6 +10,7 @@
 #include <zlib.h>
 
 
+
 /* Extra #includes */
 /* Your code will be inserted here */
 
@@ -52,25 +53,25 @@ pkt_status_code pkt_decode(const char *data, const size_t len, pkt_t *pkt)
 {
     if (pkt == NULL || len < 1)
     {
-        ERROR("E_UNCONSISTENT");
+        printf("E_UNCONSISTENT");
         return E_UNCONSISTENT;
     }
     uint8_t type = (data[0] >> 6) &  0x03;
     if ((len < 10 && (type == PTYPE_ACK || type == PTYPE_NACK)) || (len < 12 && type == PTYPE_DATA))
     {
-        ERROR("E_NOHEADER");
+        printf("E_NOHEADER");
         return E_NOHEADER;
     }
 
     if (pkt_set_type(pkt, type) == E_TYPE) {
-        ERROR("E_TYPE");
+        printf("E_TYPE");
         return E_TYPE;
     }
 
     uint8_t tr = (data[0] & 0x20) >> 5; // 0b00100000
     if (tr && type != PTYPE_DATA) // Paque tronqué
     {
-        ERROR("E_UNCONSISTENT");
+        printf("E_UNCONSISTENT");
         return E_UNCONSISTENT;
     }
     if (pkt_set_tr(pkt, tr) == E_TR) return E_TR;
@@ -78,7 +79,7 @@ pkt_status_code pkt_decode(const char *data, const size_t len, pkt_t *pkt)
     uint8_t window = data[0] & 0x1F; // 0b00011111
     if (pkt_set_window(pkt, window) ==  E_WINDOW)
     {
-        ERROR("E_WINDOW");
+        printf("E_WINDOW");
         return E_WINDOW;
     }
 
@@ -90,7 +91,7 @@ pkt_status_code pkt_decode(const char *data, const size_t len, pkt_t *pkt)
         uint16_t lengthH = ntohs(lengthN);
         if (16 + (size_t) lengthH != len)
         {
-            ERROR("E_LENGTH");
+            printf("E_LENGTH");
             return E_LENGTH;
         }
         if (pkt_set_length(pkt, lengthH) == E_LENGTH) return E_LENGTH;
@@ -107,7 +108,7 @@ pkt_status_code pkt_decode(const char *data, const size_t len, pkt_t *pkt)
         crcCheck = crc32(crcCheck, (Bytef *) data, 8);
         if (crcCheck != crc1)
         {
-            ERROR("E_CRC1");
+            printf("E_CRC1");
             return E_CRC;
         }
         pkt_set_crc1(pkt, crc1);
@@ -120,7 +121,7 @@ pkt_status_code pkt_decode(const char *data, const size_t len, pkt_t *pkt)
             memcpy(&crc2, data + 12 + lengthH, 4);
             crc2 = ntohl(crc2);
             if (crcCheckP != crc2) {
-                ERROR("E_CRC2");
+                printf("E_CRC2");
                 return E_CRC;
             }
             pkt_set_payload(pkt, data+12, lengthH);
@@ -139,7 +140,7 @@ pkt_status_code pkt_decode(const char *data, const size_t len, pkt_t *pkt)
         uint32_t crcCheck = crc32(0L, Z_NULL, 0);
         crcCheck = crc32(crcCheck, (Bytef *) data, 6);
         if (crcCheck != crc1) {
-            ERROR("E_CRC1");
+            printf("E_CRC1");
             return E_CRC;
         }
         pkt_set_crc1(pkt, crc1);
@@ -161,7 +162,6 @@ pkt_status_code pkt_encode(const pkt_t* pkt, char *buf, size_t *len)
     uint8_t tr = pkt_get_tr(pkt);
     tr =  (tr << 5);
     uint8_t window = pkt_get_window(pkt); // 00011111
-
     uint8_t to_write = tmp | tr | window;
     memcpy(buf, &to_write, 1); // On copie window, tr et type
 

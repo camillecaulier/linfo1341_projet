@@ -12,6 +12,7 @@
 #include <inttypes.h>
 #include <netdb.h>
 //#include "log.h"
+#include <poll.h>
 #include "packet.h"
 #include "trtp.h"
 
@@ -79,7 +80,7 @@ void send_package(int sfd,char*filename){
             if(n == 0){
                 fprintf(stderr, "nothing read ");
             }
-            pkt_encode(send_packet,buffer,n);
+            pkt_encode(send_packet,buffer,(size_t *)&n);
             available_windows --;
             //send to socket
             int send_status = send(sfd, send_packet,sizeof(struct pkt_t*), 0 );
@@ -137,15 +138,15 @@ void receive_package(const int sfd){
             }
             pkt_decode(buffer,buffer_size,rcv_packet);
             //cas tronqué
-            if(rcv_packet->tr == 1){
+            if(pkt_get_tr(rcv_packet) == 1){
                 pkt_set_type(send_packet,PTYPE_NACK);
-                pkt_set_seqnum(pkt_get_seqnum(rcv_packet),send_packet);
+                pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
                 pkt_encode(send_packet,NULL,0);
                 send(sfd, send_packet,sizeof(struct pkt_t*), 0 );
             }
             //insere dans la ll et renvoie
-            seqnum = rcv_packet->seqnum;
-            pkt_set_seqnum(send_packet,seqnum)
+            seqnum = pkt_get_seqnum(rcv_packet);
+            pkt_set_seqnum(send_packet,seqnum);
         }
 
     }

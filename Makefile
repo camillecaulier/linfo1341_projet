@@ -2,7 +2,7 @@
 CC = gcc
 
 # Feel free to add other C flags
-CFLAGS += -c -std=gnu99 -Wall -Werror -Wextra -O2
+CFLAGS += -c -std=gnu99  -Werror -Wextra -O2
 # By default, we colorize the output, but this might be ugly in log files, so feel free to remove the following line.
 CFLAGS += -D_COLOR
 
@@ -25,7 +25,7 @@ OTHER = other
 all: $(OTHER) $(SENDER) $(RECEIVER)
 
 $(OTHER): $(OTHER_OBJECTS)
-	$(CC) $(OTHER_OBJECTS) -o $@ -lz
+	$(CC) -g -c $(OTHER_SOURCES) -lz
 
 $(SENDER): $(SENDER_OBJECTS)
 	$(CC) $(SENDER_OBJECTS) -o $@ -lz
