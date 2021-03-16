@@ -134,7 +134,7 @@ void send_package(int sfd,char*filename){
     pkt_t *send_packet,*rcv_packet;
     pkt_new(send_packet);
     pkt_set_type(send_packet, PTYPE_DATA);
-    pkt_set_tr(send_packet, 1 );
+    pkt_set_tr(send_packet, 0 );
     pkt_set_window(send_packet, 31);
     pkt_set_seqnum(send_packet, 0);
     pkt_set_timestamp(send_packet, 120);
@@ -222,8 +222,8 @@ void receive_package(const int sfd){
     poll_files_descriptors[1].events = POLLIN;
     pkt_t *send_packet,*rcv_packet;
     pkt_new(send_packet);
-    pkt_set_type(send_packet, PTYPE_NACK);
-    pkt_set_tr(send_packet, 1 );
+    pkt_set_type(send_packet, PTYPE_ACK);
+    pkt_set_tr(send_packet, 0 );
     pkt_set_window(send_packet, 0);
     pkt_set_seqnum(send_packet, 0);
     pkt_set_timestamp(send_packet, 120);
@@ -243,11 +243,10 @@ void receive_package(const int sfd){
         }
         pkt_decode(buffer,buffer_size,rcv_packet);
         //cas fin
-        if(rcv_packet->tr == 0){
-            pkt_set_type(send_packet,PTYPE_ACK);
+        if(rcv_packet->tr == 1){
+            pkt_set_type(send_packet,PTYPE_NACK);
             pkt_encode(send_packet,NULL,0);
             send(sfd, send_packet,sizeof(struct pkt_t*), 0 );
-            return;
         }
         //insere dans la ll et renvoie
         seqnum = rcv_packet->seqnum;
