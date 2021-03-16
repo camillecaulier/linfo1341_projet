@@ -19,7 +19,10 @@
 
 void send_package(int sfd,char*filename){
     FILE* fptr;
-    fptr = fopen(filename,"r");
+    if(filename != NULL){
+    fptr = fopen(filename,"r");}
+    else if(filename == NULL){fptr = stdin;}
+
     int fd = fileno(fptr);
 
     int n;
@@ -27,8 +30,8 @@ void send_package(int sfd,char*filename){
     struct pollfd poll_files_descriptors[2];
     int stdin_stdout;
     int available_windows = 1;
-    pkt_t *send_packet,*rcv_packet;
-    pkt_new(send_packet);
+    pkt_t *send_packet = pkt_new();
+    pkt_t *rcv_packet;
     pkt_set_type(send_packet, PTYPE_DATA);
     pkt_set_tr(send_packet, 0 );
     pkt_set_window(send_packet, 31);
@@ -70,7 +73,6 @@ void send_package(int sfd,char*filename){
         //check if something in the stdin and send to socket
         if(poll_files_descriptors[0].revents & POLLIN){
             //readable et il y qqch
-            while(available_windows ==0){}
             memset((void *) buffer , 0 , buffer_size);
             n = fread(buffer , 1, buffer_size, fptr);
             if ( feof(fptr)){
@@ -80,18 +82,34 @@ void send_package(int sfd,char*filename){
             if(n == 0){
                 fprintf(stderr, "nothing read ");
             }
-            pkt_encode(send_packet,buffer,(size_t *)&n);
+            if(pkt_set_payload(send_packet,buffer,n)!= PKT_OK)
+                fprintf(stderr,"erreur de set payload \n");
+            char data[1024];
+            int data_size = 1024;
+            fprintf(stderr,"length : %d\n",pkt_get_length(send_packet));
+            if(pkt_encode(send_packet,buffer,(size_t *)&data_size) !=PKT_OK){
+                fprintf(stderr,"erreur encode\n");
+            }
+            fprintf(stderr,"type de la data : %d \n",pkt_get_type(send_packet));
             available_windows --;
+
             //send to socket
-            int send_status = send(sfd, send_packet,sizeof(struct pkt_t*), 0 );
+            for(int i = 0 ; i<100; i++)
+                fprintf(stderr, "data[%d] : %c\n",i,data[i]);
+            fprintf(stderr,"buffer sent : %s\n",pkt_get_payload(send_packet));
+
+            int send_status = send(sfd,data,data_size, 0 );
             if(send_status == -1 ){
                 fprintf(stderr, "nothing sent");
             }
+            fprintf(stderr,"status sent : %d\n",send_status);
+
+
             memset((void *) buffer , 0 , buffer_size);
         }
         if(poll_files_descriptors[1].revents & POLLIN ){//
 
-            int sent_status = recv(sfd, rcv_packet, sizeof (struct pkt_t*), 0);
+            int sent_status = recv(sfd, &rcv_packet, sizeof (struct pkt_t*), 0);
             if(sent_status == -1){
                 fprintf(stderr,"nothing sent");
                 fflush(stdout);
@@ -115,8 +133,8 @@ void receive_package(const int sfd){
     int seqnum;
     poll_files_descriptors[1].fd  = sfd;
     poll_files_descriptors[1].events = POLLIN;
-    pkt_t *send_packet,*rcv_packet;
-    pkt_new(send_packet);
+    pkt_t *send_packet = pkt_new();
+    pkt_t *rcv_packet;
     pkt_set_type(send_packet, PTYPE_ACK);
     pkt_set_tr(send_packet, 0 );
     pkt_set_window(send_packet, 0);
@@ -131,7 +149,7 @@ void receive_package(const int sfd){
 
         if(poll_files_descriptors[1].revents & POLLIN ){//
 
-            int sent_status = recv(sfd, rcv_packet, sizeof (struct pkt_t*), 0);
+            int sent_status = recv(sfd, &rcv_packet, sizeof (struct pkt_t*), 0);
             if(sent_status == -1){
                 fprintf(stderr,"nothing sent");
                 fflush(stdout);

@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     int sfd;
-    sfd = create_socket(NULL,-1,&listener_addr,listen_port);
+    sfd = create_socket(&listener_addr,listen_port,NULL,-1);
     if(sfd<0){
         fprintf(stderr,"Could not connect the socket after the first message.\n");
         return EXIT_FAILURE;
