@@ -10,23 +10,28 @@ CFLAGS += -D_COLOR
 LDFLAGS +=
 
 # Adapt these as you want to fit with your project
-SENDER_SOURCES = $(wildcard src/sender.c src/log.c)
+SENDER_SOURCES = $(wildcard src/sender.c src/log.c )
 RECEIVER_SOURCES = $(wildcard src/receiver.c src/log.c)
+OTHER_SOURCES = $(wildcard src/real_address.c src/create_socket.c src/trtp.c src/wait_for_client.c src/packet.c)
 
 SENDER_OBJECTS = $(SENDER_SOURCES:.c=.o)
 RECEIVER_OBJECTS = $(RECEIVER_SOURCES:.c=.o)
+OTHER_OBJECTS = $(OTHER_SOURCES:.c=.o)
 
 SENDER = sender
 RECEIVER = receiver
+OTHER = other
 
-all: $(SENDER) $(RECEIVER)
+all: $(SENDER) $(RECEIVER) $(OTHER)
 
 $(SENDER): $(SENDER_OBJECTS)
-	$(CC) $(SENDER_OBJECTS) -o $@ $(LDFLAGS)
+	$(CC) $(SENDER_OBJECTS) -o $@ -lz
 
 $(RECEIVER): $(RECEIVER_OBJECTS)
-	$(CC) $(RECEIVER_OBJECTS) -o $@ $(LDFLAGS)
+	$(CC) $(RECEIVER_OBJECTS) -o $@ -lz
 
+$(OTHER): $(OTHER_OBJECTS)
+	$(CC) $(OTHER_OBJECTS) -o $@ -lz
 %.o: %.c
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 

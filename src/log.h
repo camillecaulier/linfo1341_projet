@@ -81,6 +81,4 @@ void dump(const uint8_t *bytes, size_t len);
 
 
 #endif // __LOG_H_
-=======
-#endif // __LOG_H_
 
