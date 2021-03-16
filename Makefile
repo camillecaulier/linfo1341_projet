@@ -22,7 +22,10 @@ SENDER = sender
 RECEIVER = receiver
 OTHER = other
 
-all: $(SENDER) $(RECEIVER) $(OTHER)
+all: $(OTHER) $(SENDER) $(RECEIVER)
+
+$(OTHER): $(OTHER_OBJECTS)
+	$(CC) $(OTHER_OBJECTS) -o $@ -lz
 
 $(SENDER): $(SENDER_OBJECTS)
 	$(CC) $(SENDER_OBJECTS) -o $@ -lz
@@ -30,8 +33,7 @@ $(SENDER): $(SENDER_OBJECTS)
 $(RECEIVER): $(RECEIVER_OBJECTS)
 	$(CC) $(RECEIVER_OBJECTS) -o $@ -lz
 
-$(OTHER): $(OTHER_OBJECTS)
-	$(CC) $(OTHER_OBJECTS) -o $@ -lz
+
 %.o: %.c
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 
