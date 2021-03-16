@@ -1,0 +1,686 @@
+commit de2d9c582820cc5c5c6b0f44cb14d2bd81c681de
+Author: camillecaulier <camillecaulier.cc@gmail.com>
+Date:   Tue Mar 16 13:50:33 2021 +0100
+
+    work
+
+ src/packet.c          | 1359 ++++++++++++++++++++++++++++++++++++++++-----------
+ src/packet.o          |  Bin 8088 -> 7512 bytes
+ src/trtp.c            |   31 +-
+ src/trtp.o            |  Bin 7520 -> 7824 bytes
+ src/wait_for_client.c |    6 +-
+ src/wait_for_client.o |  Bin 3232 -> 3240 bytes
+ 6 files changed, 1086 insertions(+), 310 deletions(-)
+
+commit d83b7af8afd9c28753cb9636f5eac6fb9ad1adcb
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 12:56:11 2021 +0100
+
+    up
+
+ receiver     | Bin 23536 -> 23536 bytes
+ sender       | Bin 23448 -> 23448 bytes
+ src/packet.c |   6 ++++++
+ src/trtp.c   |  11 +++++++----
+ src/trtp.o   | Bin 7304 -> 7520 bytes
+ 5 files changed, 13 insertions(+), 4 deletions(-)
+
+commit d06b1d9ef41ae143c540289f19ddec66b3c4c0e1
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 04:49:32 2021 +0100
+
+    up
+
+ receiver              | Bin 23488 -> 23536 bytes
+ sender                | Bin 23456 -> 23448 bytes
+ src/packet.c          |   2 +-
+ src/packet.o          | Bin 6320 -> 8088 bytes
+ src/receiver.c        |   2 +-
+ src/receiver.o        | Bin 5000 -> 4984 bytes
+ src/trtp.c            |  38 ++++++++++++++++++++++++++++----------
+ src/trtp.o            | Bin 5912 -> 7304 bytes
+ src/wait_for_client.c |  11 +++++++----
+ src/wait_for_client.o | Bin 2552 -> 3232 bytes
+ 10 files changed, 37 insertions(+), 16 deletions(-)
+
+commit 0fc1a5d86fb955701f576bbdacc878e20ba99813
+Merge: 9ac96cb 7bee3d4
+Author: camillecaulier <camillecaulier.cc@gmail.com>
+Date:   Tue Mar 16 03:49:33 2021 +0100
+
+    Merge branch 'main' of https://github.com/camillecaulier/linfo1341_projet into main
+
+commit 9ac96cb879a6fadb5d30b624507f649b4b49a8dd
+Author: camillecaulier <camillecaulier.cc@gmail.com>
+Date:   Tue Mar 16 03:49:08 2021 +0100
+
+    real packet
+
+ src/packet.c | 496 ++++++++++++++++++++++++++++++++++++-------------------------
+ 1 file changed, 297 insertions(+), 199 deletions(-)
+
+commit 7bee3d40ed88e7b742ca53003899b8613df34bc6
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 03:34:29 2021 +0100
+
+    up
+
+ Makefile       |  15 +++++++--------
+ receiver       | Bin 0 -> 23488 bytes
+ sender         | Bin 0 -> 23456 bytes
+ src/receiver.c |   5 +++--
+ src/receiver.o | Bin 0 -> 5000 bytes
+ 5 files changed, 10 insertions(+), 10 deletions(-)
+
+commit 2a1e30c501bd6c984523c8b94b630dc6065cd6cf
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 03:29:42 2021 +0100
+
+    up
+
+ Makefile              |   4 ++--
+ create_socket.o       | Bin 0 -> 9728 bytes
+ packet.o              | Bin 0 -> 20872 bytes
+ real_address.o        | Bin 0 -> 7648 bytes
+ src/packet.c          |  20 ++++++++++----------
+ src/packet.o          | Bin 0 -> 6320 bytes
+ src/trtp.c            |  11 ++++++-----
+ src/trtp.o            | Bin 0 -> 5912 bytes
+ src/wait_for_client.o | Bin 0 -> 2552 bytes
+ trtp.o                | Bin 0 -> 13632 bytes
+ wait_for_client.o     | Bin 0 -> 9984 bytes
+ 11 files changed, 18 insertions(+), 17 deletions(-)
+
+commit 83103fb4402061b594d4647dedd0b1c703fcde42
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 03:04:45 2021 +0100
+
+    up
+
+ Makefile            |   8 +++++---
+ src/create_socket.o | Bin 0 -> 2768 bytes
+ src/real_address.o  | Bin 0 -> 1592 bytes
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+commit 495d3edc74c1a2fe3ddb22dc27f6940f3de03f5d
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 03:02:25 2021 +0100
+
+    up
+
+ Makefile                                             |  13 +-
+ cmake-build-debug/CMakeCache.txt                     | 175 ++-----
+ .../CMakeFiles/3.17.5/CMakeCCompiler.cmake           |  46 +-
+ .../CMakeFiles/3.17.5/CMakeCXXCompiler.cmake         |  38 +-
+ .../3.17.5/CMakeDetermineCompilerABI_C.bin           | Bin 53904 -> 37888 bytes
+ .../3.17.5/CMakeDetermineCompilerABI_CXX.bin         | Bin 53913 -> 37888 bytes
+ .../CMakeFiles/3.17.5/CMakeRCCompiler.cmake          |   4 +-
+ .../CMakeFiles/3.17.5/CMakeSystem.cmake              |   8 +-
+ .../3.17.5/CompilerIdC/CMakeCCompilerId.exe          | Bin 0 -> 79872 bytes
+ .../3.17.5/CompilerIdC/CMakeCCompilerId.obj          | Bin 0 -> 1444 bytes
+ .../CMakeFiles/3.17.5/CompilerIdC/a.exe              | Bin 54020 -> 0 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.exe      | Bin 0 -> 79872 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.obj      | Bin 0 -> 1455 bytes
+ .../CMakeFiles/3.17.5/CompilerIdCXX/a.exe            | Bin 54048 -> 0 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake       |   9 +-
+ cmake-build-debug/CMakeFiles/CMakeOutput.log         | 555 +++------------------
+ cmake-build-debug/CMakeFiles/Makefile.cmake          | 124 +++--
+ cmake-build-debug/CMakeFiles/Makefile2               |  67 +--
+ cmake-build-debug/CMakeFiles/TargetDirectories.txt   |   6 +-
+ cmake-build-debug/CMakeFiles/clion-environment.txt   |   2 +-
+ cmake-build-debug/CMakeFiles/clion-log.txt           |  18 +-
+ .../CMakeFiles/projet.dir/DependInfo.cmake           |  16 +-
+ cmake-build-debug/CMakeFiles/projet.dir/build.make   | 280 ++++++-----
+ .../CMakeFiles/projet.dir/cmake_clean.cmake          |   2 +-
+ cmake-build-debug/CMakeFiles/projet.dir/flags.make   |   8 +-
+ .../CMakeFiles/projet.dir/includes_C.rsp             |   1 -
+ cmake-build-debug/CMakeFiles/projet.dir/link.txt     |   3 -
+ cmake-build-debug/CMakeFiles/projet.dir/linklibs.rsp |   1 -
+ cmake-build-debug/Makefile                           | 285 +++++------
+ cmake-build-debug/Testing/Temporary/LastTest.log     |   4 +-
+ cmake-build-debug/cmake_install.cmake                |   4 +-
+ cmake-build-debug/projet.cbp                         | 120 ++---
+ src/log.h                                            |   2 -
+ src/log.o                                            | Bin 0 -> 2512 bytes
+ src/sender.o                                         | Bin 0 -> 4592 bytes
+ 35 files changed, 678 insertions(+), 1113 deletions(-)
+
+commit e6635d04543dbca75f16a8cd272048a745db8e9c
+Author: camillecaulier <camillecaulier.cc@gmail.com>
+Date:   Tue Mar 16 02:42:34 2021 +0100
+
+    ok
+
+ CMakeLists.txt                                       |  2 +-
+ cmake-build-debug/CMakeFiles/Makefile2               |  4 +--
+ cmake-build-debug/CMakeFiles/progress.marks          |  2 +-
+ .../CMakeFiles/projet.dir/DependInfo.cmake           |  1 +
+ cmake-build-debug/CMakeFiles/projet.dir/build.make   | 20 +++++++++++++--
+ .../CMakeFiles/projet.dir/cmake_clean.cmake          |  1 +
+ cmake-build-debug/CMakeFiles/projet.dir/objects1.rsp |  2 +-
+ .../CMakeFiles/projet.dir/progress.make              |  1 +
+ cmake-build-debug/Makefile                           | 30 ++++++++++++++++++++++
+ cmake-build-debug/Testing/Temporary/LastTest.log     |  4 +--
+ cmake-build-debug/projet.cbp                         |  6 +++++
+ src/sender.c                                         |  1 +
+ 12 files changed, 65 insertions(+), 9 deletions(-)
+
+commit 653377fbe46ea5ba154ddfab25788561631acaef
+Author: camillecaulier <camillecaulier.cc@gmail.com>
+Date:   Tue Mar 16 02:39:07 2021 +0100
+
+    restructure
+
+ CMakeLists.txt                                       |   5 +-
+ cmake-build-debug/CMakeCache.txt                     | 175 +++++--
+ .../CMakeFiles/3.17.5/CMakeCCompiler.cmake           |  46 +-
+ .../CMakeFiles/3.17.5/CMakeCXXCompiler.cmake         |  38 +-
+ .../3.17.5/CMakeDetermineCompilerABI_C.bin           | Bin 37888 -> 53904 bytes
+ .../3.17.5/CMakeDetermineCompilerABI_CXX.bin         | Bin 37888 -> 53913 bytes
+ .../CMakeFiles/3.17.5/CMakeRCCompiler.cmake          |   4 +-
+ .../CMakeFiles/3.17.5/CMakeSystem.cmake              |   8 +-
+ .../3.17.5/CompilerIdC/CMakeCCompilerId.exe          | Bin 79872 -> 0 bytes
+ .../3.17.5/CompilerIdC/CMakeCCompilerId.obj          | Bin 1444 -> 0 bytes
+ .../CMakeFiles/3.17.5/CompilerIdC/a.exe              | Bin 0 -> 54020 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.exe      | Bin 79872 -> 0 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.obj      | Bin 1455 -> 0 bytes
+ .../CMakeFiles/3.17.5/CompilerIdCXX/a.exe            | Bin 0 -> 54048 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake       |   9 +-
+ cmake-build-debug/CMakeFiles/CMakeOutput.log         | 555 ++++++++++++++++++---
+ cmake-build-debug/CMakeFiles/Makefile.cmake          | 124 ++---
+ cmake-build-debug/CMakeFiles/Makefile2               |  67 ++-
+ cmake-build-debug/CMakeFiles/TargetDirectories.txt   |   6 +-
+ cmake-build-debug/CMakeFiles/clion-environment.txt   |   2 +-
+ cmake-build-debug/CMakeFiles/clion-log.txt           |  18 +-
+ cmake-build-debug/CMakeFiles/progress.marks          |   2 +-
+ .../CMakeFiles/projet.dir/DependInfo.cmake           |  13 +-
+ cmake-build-debug/CMakeFiles/projet.dir/build.make   | 234 ++++-----
+ .../CMakeFiles/projet.dir/cmake_clean.cmake          |   3 +-
+ cmake-build-debug/CMakeFiles/projet.dir/flags.make   |   8 +-
+ .../CMakeFiles/projet.dir/includes_C.rsp             |   1 +
+ cmake-build-debug/CMakeFiles/projet.dir/link.txt     |   3 +
+ cmake-build-debug/CMakeFiles/projet.dir/linklibs.rsp |   1 +
+ cmake-build-debug/CMakeFiles/projet.dir/objects1.rsp |   2 +-
+ .../CMakeFiles/projet.dir/progress.make              |   1 +
+ cmake-build-debug/Makefile                           | 255 ++++++----
+ cmake-build-debug/Testing/Temporary/LastTest.log     |   4 +-
+ cmake-build-debug/cmake_install.cmake                |   4 +-
+ cmake-build-debug/projet.cbp                         | 118 ++---
+ src/create_socket.c                                  |  72 +++
+ src/create_socket.h                                  |  23 +
+ src/real_address.c                                   |  25 +
+ src/real_address.h                                   |  22 +
+ src/receiver.c                                       |   3 +
+ src/sender.c                                         |   3 +
+ src/trtp.c                                           |  93 ----
+ src/wait_for_client.c                                |  41 ++
+ src/wait_for_client.h                                |  17 +
+ 44 files changed, 1312 insertions(+), 693 deletions(-)
+
+commit be572f470d3c5b62359e7e1acd2fc849fb6c09b0
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 02:27:27 2021 +0100
+
+    up
+
+ CMakeLists.txt                                       |   2 +-
+ cmake-build-debug/CMakeCache.txt                     | 175 ++-----
+ .../CMakeFiles/3.17.5/CMakeCCompiler.cmake           |  46 +-
+ .../CMakeFiles/3.17.5/CMakeCXXCompiler.cmake         |  38 +-
+ .../3.17.5/CMakeDetermineCompilerABI_C.bin           | Bin 53904 -> 37888 bytes
+ .../3.17.5/CMakeDetermineCompilerABI_CXX.bin         | Bin 53913 -> 37888 bytes
+ .../CMakeFiles/3.17.5/CMakeRCCompiler.cmake          |   4 +-
+ .../CMakeFiles/3.17.5/CMakeSystem.cmake              |   8 +-
+ .../3.17.5/CompilerIdC/CMakeCCompilerId.exe          | Bin 0 -> 79872 bytes
+ .../3.17.5/CompilerIdC/CMakeCCompilerId.obj          | Bin 0 -> 1444 bytes
+ .../CMakeFiles/3.17.5/CompilerIdC/a.exe              | Bin 54020 -> 0 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.exe      | Bin 0 -> 79872 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.obj      | Bin 0 -> 1455 bytes
+ .../CMakeFiles/3.17.5/CompilerIdCXX/a.exe            | Bin 54048 -> 0 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake       |   9 +-
+ cmake-build-debug/CMakeFiles/CMakeOutput.log         | 555 +++------------------
+ cmake-build-debug/CMakeFiles/Makefile.cmake          | 187 ++++---
+ cmake-build-debug/CMakeFiles/Makefile2               |  67 +--
+ cmake-build-debug/CMakeFiles/TargetDirectories.txt   |   6 +-
+ cmake-build-debug/CMakeFiles/clion-environment.txt   |   2 +-
+ cmake-build-debug/CMakeFiles/clion-log.txt           |  16 +-
+ cmake-build-debug/CMakeFiles/progress.marks          |   2 +-
+ .../CMakeFiles/projet.dir/DependInfo.cmake           |  11 +-
+ cmake-build-debug/CMakeFiles/projet.dir/build.make   | 208 ++++----
+ .../CMakeFiles/projet.dir/cmake_clean.cmake          |   3 +-
+ cmake-build-debug/CMakeFiles/projet.dir/flags.make   |   8 +-
+ .../CMakeFiles/projet.dir/includes_C.rsp             |   1 -
+ cmake-build-debug/CMakeFiles/projet.dir/link.txt     |   3 -
+ cmake-build-debug/CMakeFiles/projet.dir/linklibs.rsp |   1 -
+ cmake-build-debug/CMakeFiles/projet.dir/objects1.rsp |   2 +-
+ .../CMakeFiles/projet.dir/progress.make              |   1 +
+ cmake-build-debug/Makefile                           | 225 +++++----
+ cmake-build-debug/Testing/Temporary/LastTest.log     |   4 +-
+ cmake-build-debug/cmake_install.cmake                |   4 +-
+ cmake-build-debug/projet.cbp                         | 114 +++--
+ src/log.c                                            | 235 ---------
+ src/log.h                                            |  20 -
+ src/trtp.c                                           | 247 +++++++++
+ src/trtp.h                                           |  30 ++
+ 39 files changed, 887 insertions(+), 1347 deletions(-)
+
+commit 2eb27c9129a29155fb7d09bcfba158df6002d5e8
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 01:45:02 2021 +0100
+
+    jpp
+
+ src/log.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+commit edbbe739f29c90546e060f13be83c923e7cd1acd
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 01:11:06 2021 +0100
+
+    up
+
+ src/log.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+commit 9c39530ba87cb83133bcb9e070d8a54ad52122c8
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 01:02:06 2021 +0100
+
+    receiver
+
+ src/log.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+
+commit d4f3eec73abaab5b7521e7d59f93cbd5975f12d1
+Author: camillecaulier <camillecaulier.cc@gmail.com>
+Date:   Tue Mar 16 00:24:46 2021 +0100
+
+    small edit
+
+ cmake-build-debug/CMakeCache.txt                     | 420 +++++++++++++
+ .../CMakeFiles/3.17.5/CMakeCCompiler.cmake           |  76 +++
+ .../CMakeFiles/3.17.5/CMakeCXXCompiler.cmake         |  88 +++
+ .../3.17.5/CMakeDetermineCompilerABI_C.bin           | Bin 0 -> 53904 bytes
+ .../3.17.5/CMakeDetermineCompilerABI_CXX.bin         | Bin 0 -> 53913 bytes
+ .../CMakeFiles/3.17.5/CMakeRCCompiler.cmake          |   6 +
+ .../CMakeFiles/3.17.5/CMakeSystem.cmake              |  15 +
+ .../CMakeFiles/3.17.5/CompilerIdC/CMakeCCompilerId.c | 671 +++++++++++++++++++++
+ .../CMakeFiles/3.17.5/CompilerIdC/a.exe              | Bin 0 -> 54020 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.cpp      | 660 ++++++++++++++++++++
+ .../CMakeFiles/3.17.5/CompilerIdCXX/a.exe            | Bin 0 -> 54048 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake       |  16 +
+ cmake-build-debug/CMakeFiles/CMakeOutput.log         | 530 ++++++++++++++++
+ cmake-build-debug/CMakeFiles/Makefile.cmake          | 132 ++++
+ cmake-build-debug/CMakeFiles/Makefile2               | 125 ++++
+ cmake-build-debug/CMakeFiles/TargetDirectories.txt   |   3 +
+ cmake-build-debug/CMakeFiles/clion-environment.txt   |   4 +
+ cmake-build-debug/CMakeFiles/clion-log.txt           |  18 +
+ cmake-build-debug/CMakeFiles/cmake.check_cache       |   1 +
+ cmake-build-debug/CMakeFiles/progress.marks          |   1 +
+ .../CMakeFiles/projet.dir/DependInfo.cmake           |  24 +
+ cmake-build-debug/CMakeFiles/projet.dir/build.make   | 168 ++++++
+ .../CMakeFiles/projet.dir/cmake_clean.cmake          |  15 +
+ cmake-build-debug/CMakeFiles/projet.dir/depend.make  |   2 +
+ cmake-build-debug/CMakeFiles/projet.dir/flags.make   |  10 +
+ .../CMakeFiles/projet.dir/includes_C.rsp             |   1 +
+ cmake-build-debug/CMakeFiles/projet.dir/link.txt     |   3 +
+ cmake-build-debug/CMakeFiles/projet.dir/linklibs.rsp |   1 +
+ cmake-build-debug/CMakeFiles/projet.dir/objects1.rsp |   1 +
+ .../CMakeFiles/projet.dir/progress.make              |   6 +
+ cmake-build-debug/Makefile                           | 287 +++++++++
+ cmake-build-debug/Testing/Temporary/LastTest.log     |   3 +
+ cmake-build-debug/cmake_install.cmake                |  44 ++
+ cmake-build-debug/projet.cbp                         | 113 ++++
+ src/log.c                                            |   4 +-
+ 35 files changed, 3447 insertions(+), 1 deletion(-)
+
+commit 99a1b57a1ab2b592da7564a6b91e84aaa192e9f9
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 00:04:43 2021 +0100
+
+    recv
+
+ src/log.c      | 2 ++
+ src/log.h      | 1 +
+ src/receiver.c | 7 +++++++
+ 3 files changed, 10 insertions(+)
+
+commit 85983a64db1570d38d5867e358d638b5cdb71bb8
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 16 00:01:16 2021 +0100
+
+    up
+
+ cmake-build-debug/CMakeCache.txt                     | 369 -----------
+ .../CMakeFiles/3.17.5/CMakeCCompiler.cmake           |  76 ---
+ .../CMakeFiles/3.17.5/CMakeCXXCompiler.cmake         |  88 ---
+ .../3.17.5/CMakeDetermineCompilerABI_C.bin           | Bin 37888 -> 0 bytes
+ .../3.17.5/CMakeDetermineCompilerABI_CXX.bin         | Bin 37888 -> 0 bytes
+ .../CMakeFiles/3.17.5/CMakeRCCompiler.cmake          |   6 -
+ .../CMakeFiles/3.17.5/CMakeSystem.cmake              |  15 -
+ .../CMakeFiles/3.17.5/CompilerIdC/CMakeCCompilerId.c | 671 ---------------------
+ .../3.17.5/CompilerIdC/CMakeCCompilerId.exe          | Bin 79872 -> 0 bytes
+ .../3.17.5/CompilerIdC/CMakeCCompilerId.obj          | Bin 1444 -> 0 bytes
+ .../CMakeFiles/3.17.5/CompilerIdC/a.exe              | Bin 54020 -> 0 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.cpp      | 660 --------------------
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.exe      | Bin 79872 -> 0 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.obj      | Bin 1455 -> 0 bytes
+ .../CMakeFiles/3.17.5/CompilerIdCXX/a.exe            | Bin 54048 -> 0 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake       |  21 -
+ cmake-build-debug/CMakeFiles/CMakeOutput.log         | 605 -------------------
+ cmake-build-debug/CMakeFiles/Makefile.cmake          |  51 --
+ cmake-build-debug/CMakeFiles/Makefile2               | 132 ----
+ cmake-build-debug/CMakeFiles/Progress/1              |   1 -
+ cmake-build-debug/CMakeFiles/Progress/count.txt      |   1 -
+ cmake-build-debug/CMakeFiles/TargetDirectories.txt   |   9 -
+ cmake-build-debug/CMakeFiles/clion-environment.txt   |   4 -
+ cmake-build-debug/CMakeFiles/clion-log.txt           |  25 -
+ cmake-build-debug/CMakeFiles/cmake.check_cache       |   1 -
+ cmake-build-debug/CMakeFiles/progress.marks          |   1 -
+ .../CMakeFiles/projet.dir/C.includecache             | 153 -----
+ .../CMakeFiles/projet.dir/DependInfo.cmake           |  30 -
+ cmake-build-debug/CMakeFiles/projet.dir/build.make   | 242 --------
+ .../CMakeFiles/projet.dir/cmake_clean.cmake          |  15 -
+ .../CMakeFiles/projet.dir/depend.internal            |  27 -
+ cmake-build-debug/CMakeFiles/projet.dir/depend.make  |  16 -
+ cmake-build-debug/CMakeFiles/projet.dir/flags.make   |  10 -
+ .../CMakeFiles/projet.dir/includes_C.rsp             |   1 -
+ cmake-build-debug/CMakeFiles/projet.dir/objects1.rsp |   1 -
+ .../CMakeFiles/projet.dir/progress.make              |   6 -
+ cmake-build-debug/CMakeFiles/projet.dir/vc140.pdb    | Bin 61440 -> 0 bytes
+ cmake-build-debug/Makefile                           | 285 ---------
+ cmake-build-debug/Testing/Temporary/LastTest.log     |   9 -
+ cmake-build-debug/cmake_install.cmake                |  52 --
+ cmake-build-debug/projet.cbp                         | 209 -------
+ src/log.h                                            |   4 +-
+ src/log.h.gch                                        | Bin 3927828 -> 0 bytes
+ src/receiver.c                                       |  23 +-
+ 44 files changed, 15 insertions(+), 3804 deletions(-)
+
+commit 53e0d1394265db21dccc1e9c40dc055196a3c825
+Merge: 3cbf754 cede42d
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Mon Mar 15 22:16:27 2021 +0100
+
+    up
+
+commit cede42d90725707944736d49fbaf42992f39c1a0
+Author: chlohest <61017549+chlohest@users.noreply.github.com>
+Date:   Mon Mar 15 22:15:50 2021 +0100
+
+    Update sender.c
+
+ src/sender.c | 34 ++++++++++++++++++++++++----------
+ 1 file changed, 24 insertions(+), 10 deletions(-)
+
+commit a8998eeb2184154fa8114e4a59bdbf0d7b8602fa
+Author: chlohest <61017549+chlohest@users.noreply.github.com>
+Date:   Mon Mar 15 22:15:23 2021 +0100
+
+    Update log.h
+
+ src/log.h | 81 ++++++++++++++++++++++++++++++++---------------------------------
+ 1 file changed, 40 insertions(+), 41 deletions(-)
+
+commit 00595f61a988e454bf3f766628f025a21fc8cbec
+Author: chlohest <61017549+chlohest@users.noreply.github.com>
+Date:   Mon Mar 15 22:14:57 2021 +0100
+
+    Update log.c
+
+ src/log.c | 280 ++++++++++++++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 192 insertions(+), 88 deletions(-)
+
+commit 3cbf754c9738033364f8255449e4c3310be90823
+Author: charles <charles.lohest@student.uclouvain.be>
+Date:   Mon Mar 15 22:13:10 2021 +0100
+
+    up
+
+ .idea/.name                                          |   1 +
+ .idea/workspace.xml                                  |  51 +-
+ CMakeLists.txt                                       |   2 +-
+ cmake-build-debug/CMakeCache.txt                     | 175 ++-----
+ .../CMakeFiles/3.17.5/CMakeCCompiler.cmake           |  46 +-
+ .../CMakeFiles/3.17.5/CMakeCXXCompiler.cmake         |  38 +-
+ .../3.17.5/CMakeDetermineCompilerABI_C.bin           | Bin 53904 -> 37888 bytes
+ .../3.17.5/CMakeDetermineCompilerABI_CXX.bin         | Bin 53913 -> 37888 bytes
+ .../CMakeFiles/3.17.5/CMakeRCCompiler.cmake          |   4 +-
+ .../CMakeFiles/3.17.5/CMakeSystem.cmake              |   8 +-
+ .../3.17.5/CompilerIdC/CMakeCCompilerId.exe          | Bin 0 -> 79872 bytes
+ .../3.17.5/CompilerIdC/CMakeCCompilerId.obj          | Bin 0 -> 1444 bytes
+ .../CMakeFiles/3.17.5/CompilerIdC/a.exe              | Bin 54020 -> 0 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.exe      | Bin 0 -> 79872 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.obj      | Bin 0 -> 1455 bytes
+ .../CMakeFiles/3.17.5/CompilerIdCXX/a.exe            | Bin 54048 -> 0 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake       |   9 +-
+ cmake-build-debug/CMakeFiles/CMakeOutput.log         | 555 +++------------------
+ cmake-build-debug/CMakeFiles/Makefile.cmake          | 125 +----
+ cmake-build-debug/CMakeFiles/Makefile2               |  67 +--
+ cmake-build-debug/CMakeFiles/Progress/2              |   1 -
+ cmake-build-debug/CMakeFiles/Progress/3              |   1 -
+ cmake-build-debug/CMakeFiles/Progress/count.txt      |   2 +-
+ cmake-build-debug/CMakeFiles/TargetDirectories.txt   |   6 +-
+ cmake-build-debug/CMakeFiles/clion-environment.txt   |   2 +-
+ cmake-build-debug/CMakeFiles/clion-log.txt           |  18 +-
+ cmake-build-debug/CMakeFiles/progress.marks          |   2 +-
+ .../CMakeFiles/projet.dir/C.includecache             |  70 ++-
+ .../CMakeFiles/projet.dir/DependInfo.cmake           |   9 +-
+ cmake-build-debug/CMakeFiles/projet.dir/build.make   | 177 ++++---
+ .../CMakeFiles/projet.dir/cmake_clean.cmake          |   3 +-
+ .../CMakeFiles/projet.dir/depend.internal            |  18 +-
+ cmake-build-debug/CMakeFiles/projet.dir/depend.make  |  18 +-
+ cmake-build-debug/CMakeFiles/projet.dir/flags.make   |   8 +-
+ .../CMakeFiles/projet.dir/includes_C.rsp             |   1 -
+ cmake-build-debug/CMakeFiles/projet.dir/link.txt     |   3 -
+ cmake-build-debug/CMakeFiles/projet.dir/linklibs.rsp |   1 -
+ cmake-build-debug/CMakeFiles/projet.dir/objects1.rsp |   2 +-
+ .../CMakeFiles/projet.dir/progress.make              |   1 +
+ .../CMakeFiles/projet.dir/src/log.c.obj              | Bin 4062 -> 0 bytes
+ cmake-build-debug/CMakeFiles/projet.dir/vc140.pdb    | Bin 0 -> 61440 bytes
+ cmake-build-debug/Makefile                           | 195 ++++----
+ cmake-build-debug/Testing/Temporary/LastTest.log     |   4 +-
+ cmake-build-debug/cmake_install.cmake                |   4 +-
+ cmake-build-debug/projet.cbp                         | 110 ++--
+ src/log.c                                            | 199 +++++++-
+ src/log.h                                            |  20 +
+ src/packet.c                                         | 394 +++++++++++++++
+ src/packet.h                                         | 138 +++++
+ src/sender.c                                         |  35 +-
+ 50 files changed, 1407 insertions(+), 1116 deletions(-)
+
+commit 1c3a771bf4010daa1258f93b12a1bb790ecce865
+Author: chlohest <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 2 18:45:05 2021 +0100
+
+    create
+
+ src/log.c     |  61 ++++++++++++++++++++++++++++++++++++++++++++----------------
+ src/log.h     |  20 ++++++++++++++++----
+ src/log.h.gch | Bin 3698100 -> 3927828 bytes
+ 3 files changed, 61 insertions(+), 20 deletions(-)
+
+commit 387a7dcf84d46af5a341bddbb2143095186893ff
+Author: chlohest <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 2 17:37:17 2021 +0100
+
+    send
+
+ src/log.c     |  19 +++++++++++++++++++
+ src/log.h     |  25 +++++++++++--------------
+ src/log.h.gch | Bin 3698100 -> 3698100 bytes
+ 3 files changed, 30 insertions(+), 14 deletions(-)
+
+commit ce49acf008c3c246b7d35d38a66b9eba0e384395
+Author: chlohest <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 2 16:56:37 2021 +0100
+
+    src
+
+ src/log.h     |  20 +++++++++++++++-----
+ src/log.h.gch | Bin 3698100 -> 3698100 bytes
+ src/log.o     | Bin 2344 -> 0 bytes
+ src/sender.o  | Bin 3760 -> 0 bytes
+ 4 files changed, 15 insertions(+), 5 deletions(-)
+
+commit b79060f7627bb2f46083dee9a2bc9bc0bcb6548b
+Author: camillecaulier <camillecaulier.cc@gmail.com>
+Date:   Tue Mar 2 15:25:24 2021 +0100
+
+    display byte
+
+ .idea/.name                                          |   1 +
+ .idea/workspace.xml                                  |  38 +++-
+ cmake-build-debug/CMakeCache.txt                     |  10 +-
+ .../3.17.5/CMakeDetermineCompilerABI_C.bin           | Bin 53904 -> 53904 bytes
+ .../3.17.5/CMakeDetermineCompilerABI_CXX.bin         | Bin 53913 -> 53913 bytes
+ .../CMakeFiles/3.17.5/CompilerIdC/a.exe              | Bin 54020 -> 54020 bytes
+ .../CMakeFiles/3.17.5/CompilerIdCXX/a.exe            | Bin 54048 -> 54048 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake       |   4 +-
+ cmake-build-debug/CMakeFiles/CMakeOutput.log         | 208 ++++++++++-----------
+ cmake-build-debug/CMakeFiles/Makefile2               |  10 +-
+ cmake-build-debug/CMakeFiles/TargetDirectories.txt   |   6 +-
+ cmake-build-debug/CMakeFiles/clion-log.txt           |   4 +-
+ .../CMakeFiles/projet.dir/C.includecache             |  28 ++-
+ .../CMakeFiles/projet.dir/DependInfo.cmake           |   6 +-
+ cmake-build-debug/CMakeFiles/projet.dir/build.make   |  32 ++--
+ .../CMakeFiles/projet.dir/depend.internal            |  12 +-
+ .../CMakeFiles/projet.dir/includes_C.rsp             |   2 +-
+ .../CMakeFiles/projet.dir/src/log.c.obj              | Bin 4062 -> 0 bytes
+ cmake-build-debug/Makefile                           |   8 +-
+ cmake-build-debug/Testing/Temporary/LastTest.log     |   4 +-
+ cmake-build-debug/cmake_install.cmake                |   4 +-
+ cmake-build-debug/projet.cbp                         |  72 +++----
+ src/log.c                                            |  33 +++-
+ src/log.h                                            |   3 +
+ 24 files changed, 279 insertions(+), 206 deletions(-)
+
+commit 35a194be8846e7ac47e63d1bc3cfbd25f3a0cd9c
+Author: chlohest <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 2 15:03:09 2021 +0100
+
+    src
+
+ src/log.h.gch | Bin 3698100 -> 3698100 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 8c97d23f14b10449109075b94df3d6d1672de87b
+Author: chlohest <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 2 15:01:42 2021 +0100
+
+    up
+
+ src/log.c     |   4 +++-
+ src/log.h     |  20 ++++++++++++++------
+ src/log.h.gch | Bin 2808212 -> 3698100 bytes
+ src/log.o     | Bin 2256 -> 2344 bytes
+ 4 files changed, 17 insertions(+), 7 deletions(-)
+
+commit 79f4a37898828a041cb686a5a7979b122af01b59
+Author: chlohest <charles.lohest@student.uclouvain.be>
+Date:   Tue Mar 2 14:32:41 2021 +0100
+
+    up
+
+ src/log.c     |  10 +++++++++-
+ src/log.h     |  15 +++------------
+ src/log.h.gch | Bin 0 -> 2808212 bytes
+ src/log.o     | Bin 0 -> 2256 bytes
+ src/sender.c  |   1 -
+ src/sender.o  | Bin 0 -> 3760 bytes
+ 6 files changed, 12 insertions(+), 14 deletions(-)
+
+commit f226039bd0683d0836fc9ff00cba05591ef5908e
+Author: camillecaulier <camillecaulier.cc@gmail.com>
+Date:   Mon Mar 1 17:32:58 2021 +0100
+
+    stucuture et code du syllabus
+
+ .idea/vcs.xml                                        |   6 ++
+ .idea/workspace.xml                                  |  38 ++++++++--
+ cmake-build-debug/CMakeFiles/Progress/1              |   1 +
+ cmake-build-debug/CMakeFiles/Progress/2              |   1 +
+ cmake-build-debug/CMakeFiles/Progress/3              |   1 +
+ cmake-build-debug/CMakeFiles/Progress/count.txt      |   1 +
+ .../CMakeFiles/projet.dir/C.includecache             |  62 ++++++++++++++++
+ .../CMakeFiles/projet.dir/depend.internal            |  12 +++
+ cmake-build-debug/CMakeFiles/projet.dir/depend.make  |  14 +++-
+ .../CMakeFiles/projet.dir/src/log.c.obj              | Bin 0 -> 4062 bytes
+ cmake-build-debug/Testing/Temporary/LastTest.log     |   4 +-
+ code.txt                                             |  81 +++++++++++++++++++++
+ src/log.h                                            |  21 ++++--
+ src/receiver.c                                       |  14 ++++
+ 14 files changed, 237 insertions(+), 19 deletions(-)
+
+commit 45070f741aedf8acc6a2204fd2ae5773866bdab0
+Author: chlohest <61017549+chlohest@users.noreply.github.com>
+Date:   Sun Feb 28 20:11:17 2021 +0100
+
+    Update sender.c
+
+ src/sender.c | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
+
+commit 8d92eefc8c51f5083d54c591b35476262104b2b8
+Author: chlohest <61017549+chlohest@users.noreply.github.com>
+Date:   Sun Feb 28 20:10:51 2021 +0100
+
+    Update receiver.c
+
+ src/receiver.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
+
+commit 2446a0b8cf9459eda0ba088c29f2543c736d4e73
+Author: camillecaulier <camillecaulier.cc@gmail.com>
+Date:   Sun Feb 28 18:22:31 2021 +0100
+
+    first commit
+
+ .idea/misc.xml                                       |   4 +
+ .idea/modules.xml                                    |   8 +
+ .idea/projet.iml                                     |   2 +
+ .idea/workspace.xml                                  |  70 +++
+ CMakeLists.txt                                       |  14 +
+ Makefile                                             |  58 ++
+ README.md                                            |  19 +
+ cmake-build-debug/CMakeCache.txt                     | 420 +++++++++++++
+ .../CMakeFiles/3.17.5/CMakeCCompiler.cmake           |  76 +++
+ .../CMakeFiles/3.17.5/CMakeCXXCompiler.cmake         |  88 +++
+ .../3.17.5/CMakeDetermineCompilerABI_C.bin           | Bin 0 -> 53904 bytes
+ .../3.17.5/CMakeDetermineCompilerABI_CXX.bin         | Bin 0 -> 53913 bytes
+ .../CMakeFiles/3.17.5/CMakeRCCompiler.cmake          |   6 +
+ .../CMakeFiles/3.17.5/CMakeSystem.cmake              |  15 +
+ .../CMakeFiles/3.17.5/CompilerIdC/CMakeCCompilerId.c | 671 +++++++++++++++++++++
+ .../CMakeFiles/3.17.5/CompilerIdC/a.exe              | Bin 0 -> 54020 bytes
+ .../3.17.5/CompilerIdCXX/CMakeCXXCompilerId.cpp      | 660 ++++++++++++++++++++
+ .../CMakeFiles/3.17.5/CompilerIdCXX/a.exe            | Bin 0 -> 54048 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake       |  16 +
+ cmake-build-debug/CMakeFiles/CMakeOutput.log         | 530 ++++++++++++++++
+ cmake-build-debug/CMakeFiles/Makefile.cmake          | 132 ++++
+ cmake-build-debug/CMakeFiles/Makefile2               | 125 ++++
+ cmake-build-debug/CMakeFiles/TargetDirectories.txt   |   3 +
+ cmake-build-debug/CMakeFiles/clion-environment.txt   |   4 +
+ cmake-build-debug/CMakeFiles/clion-log.txt           |  18 +
+ cmake-build-debug/CMakeFiles/cmake.check_cache       |   1 +
+ cmake-build-debug/CMakeFiles/progress.marks          |   1 +
+ .../CMakeFiles/projet.dir/DependInfo.cmake           |  23 +
+ cmake-build-debug/CMakeFiles/projet.dir/build.make   | 152 +++++
+ .../CMakeFiles/projet.dir/cmake_clean.cmake          |  14 +
+ cmake-build-debug/CMakeFiles/projet.dir/depend.make  |   2 +
+ cmake-build-debug/CMakeFiles/projet.dir/flags.make   |  10 +
+ .../CMakeFiles/projet.dir/includes_C.rsp             |   1 +
+ cmake-build-debug/CMakeFiles/projet.dir/link.txt     |   3 +
+ cmake-build-debug/CMakeFiles/projet.dir/linklibs.rsp |   1 +
+ cmake-build-debug/CMakeFiles/projet.dir/objects1.rsp |   1 +
+ .../CMakeFiles/projet.dir/progress.make              |   5 +
+ cmake-build-debug/Makefile                           | 257 ++++++++
+ cmake-build-debug/Testing/Temporary/LastTest.log     |   3 +
+ cmake-build-debug/cmake_install.cmake                |  44 ++
+ cmake-build-debug/projet.cbp                         | 107 ++++
+ src/log.c                                            |  21 +
+ src/log.h                                            |  74 +++
+ src/receiver.c                                       |  58 ++
+ src/sender.c                                         |  62 ++
+ tests/run_tests.sh                                   |   6 +
+ tests/simple_test.sh                                 |  58 ++
+ 47 files changed, 3843 insertions(+)

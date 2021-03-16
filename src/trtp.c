@@ -32,7 +32,7 @@ void send_package(int sfd,char*filename){
     int available_windows = 1;
 
     pkt_t *send_packet = pkt_new();
-    pkt_t *rcv_packet;
+    pkt_t *rcv_packet = pkt_new();
     pkt_set_type(send_packet, PTYPE_DATA); //1 = data
     pkt_set_tr(send_packet, 0 );
     pkt_set_window(send_packet, 31);
@@ -76,10 +76,7 @@ void send_package(int sfd,char*filename){
             //readable et il y qqch
             memset((void *) buffer, 0, buffer_size);
             n = fread(buffer, 1, buffer_size, fptr);
-            if (feof(fptr)) {
-                fprintf(stderr, "(read _write_loop) end of file");
-                return;
-            }
+
             if (n == 0) {
                 fprintf(stderr, "nothing read ");
             }
@@ -89,7 +86,7 @@ void send_package(int sfd,char*filename){
 
             int data_initial = 16 + n;
             char data[data_initial];
-            int data_size = 0;
+            int data_size = 16+n;
 
             fprintf(stderr,"length : %d\n",pkt_get_length(send_packet));
             if(pkt_encode(send_packet, data ,(size_t *)&data_size) !=PKT_OK){
@@ -116,70 +113,75 @@ void send_package(int sfd,char*filename){
             }
             fprintf(stderr,"status sent : %d\n",send_status);
 
-
             memset((void *) buffer , 0 , buffer_size);
         }
         if(poll_files_descriptors[1].revents & POLLIN ){//
-
-            int sent_status = recv(sfd, &rcv_packet, sizeof (struct pkt_t*), 0);
-            if(sent_status == -1){
+            char recv_buff[1024];
+            int recv_status = recv(sfd, recv_buff, 1024, 0);
+            if(recv_status == -1){
                 fprintf(stderr,"nothing sent");
                 fflush(stdout);
             }
-            pkt_decode(buffer,buffer_size,rcv_packet);
-            pkt_set_window(send_packet,pkt_get_window(send_packet)+1);
-            pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
-            available_windows = pkt_get_window(rcv_packet);
+            fprintf(stderr,"Ack received \n");
+            pkt_decode(recv_buff,recv_status,rcv_packet);
             if(pkt_get_type(rcv_packet) == PTYPE_NACK && pkt_get_tr(rcv_packet) == 1){
                 //renvoyer le packet avec le seqnum rcv->seqnum
             }
         }
+
+
     }
     fclose(fptr);
 }
 
 
 void receive_package(const int sfd){
+
     struct pollfd poll_files_descriptors[1];
     int stdin_stdout;
     int seqnum;
-    poll_files_descriptors[1].fd  = sfd;
-    poll_files_descriptors[1].events = POLLIN;
+    poll_files_descriptors[0].fd  = sfd;
+    poll_files_descriptors[0].events = POLLIN;
     pkt_t *send_packet = pkt_new();
-    pkt_t *rcv_packet;
-    pkt_set_type(send_packet, PTYPE_ACK);
-    pkt_set_tr(send_packet, 0 );
-    pkt_set_window(send_packet, 0);
-    pkt_set_seqnum(send_packet, 0);
-    pkt_set_timestamp(send_packet, 120);
-    char buffer[1024];
-    int buffer_size = 1024;
+    pkt_t *rcv_packet = pkt_new();
+
+    char buffer[1050];
+    int buffer_size = 1050;
     fcntl(sfd, F_SETFL, O_NONBLOCK);
     fcntl(1, F_SETFL, O_NONBLOCK);
+
+
     while(1){
+        poll_files_descriptors[0].fd  = sfd;
+        poll_files_descriptors[0].events = POLLIN;
         stdin_stdout = poll(poll_files_descriptors, 1 , -1);
-
-        if(poll_files_descriptors[1].revents & POLLIN ){//
-
-            int sent_status = recv(sfd, &rcv_packet, sizeof (struct pkt_t*), 0);
-            if(sent_status == -1){
+        fprintf(stderr,"im here\n");
+        memset((void *) buffer, 0, buffer_size);
+        if(poll_files_descriptors[0].revents & POLLIN ){
+            memset((void *) buffer, 0, buffer_size);
+            int receive_status = recv(sfd, buffer, buffer_size, 0);
+            if(receive_status == -1){
                 fprintf(stderr,"nothing sent");
                 fflush(stdout);
             }
-            pkt_decode(buffer,buffer_size,rcv_packet);
-            //cas tronqué
-            if(pkt_get_tr(rcv_packet) == 1){
-                pkt_set_type(send_packet,PTYPE_NACK);
-                pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
-                pkt_encode(send_packet,NULL,0);
-                send(sfd, send_packet,sizeof(struct pkt_t*), 0 );
-            }
+            pkt_decode(buffer,receive_status,rcv_packet);
+            fprintf(stderr,"taille du message recu : %d\n",receive_status);
+            fprintf(stderr,"message recu : %s\n",pkt_get_payload(rcv_packet));
+            char ack[12];
+            int size = 0;
+            pkt_set_type(send_packet,PTYPE_ACK);
+            pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet)+1%255);
+            pkt_encode(send_packet,ack,(size_t *)&size);
+            int sent_status = send(sfd, ack,size, 0 );
+            fprintf(stderr , "sent ack  : %d\n", sent_status);
             //insere dans la ll et renvoie
-            seqnum = pkt_get_seqnum(rcv_packet);
-            pkt_set_seqnum(send_packet,seqnum);
+            memset((void *) buffer, 0, buffer_size);
+
         }
 
+
     }
+
 
 }
 

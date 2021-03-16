@@ -16,10 +16,10 @@ int wait_for_client(int sfd){
     struct sockaddr_in6 client_address;
 
     int len;
-    char buffer[1024];
+    char buffer[1050];
 
     len = sizeof(client_address);
-    int response_status = recvfrom(sfd, buffer, 1024, 0, (struct sockaddr*)&client_address, (socklen_t *) & len);
+    int response_status = recvfrom(sfd, buffer, 1050, 0, (struct sockaddr*)&client_address, (socklen_t *)& len);
     if(response_status < 0){
         fprintf(stderr, "fail of resonse (wait for client)");
         fflush(stdout);
@@ -29,6 +29,7 @@ int wait_for_client(int sfd){
     buffer[response_status] = '\0';
 
     pkt_t *received_packet = pkt_new();
+    pkt_t *sent_ack = pkt_new();
     pkt_decode(buffer,response_status,received_packet);
 
     int connect_status =connect(sfd, (struct sockaddr *)&client_address, sizeof(client_address));
@@ -38,7 +39,15 @@ int wait_for_client(int sfd){
         fflush(stdout);
         return -1;
     }
-    fprintf(stderr , "payload  : %s\n", pkt_get_payload(received_packet));
+    pkt_set_type(sent_ack,PTYPE_ACK);
+    pkt_set_window(sent_ack,32);
+    pkt_set_seqnum(sent_ack,(pkt_get_seqnum(received_packet)+1)%255);
+        char ack[12];
+        int size = 0;
+        pkt_encode(sent_ack,ack,(size_t *)&size);
+        int sent_status = send(sfd, ack,size, 0 );
+        fprintf(stderr,"le message est : %s \n",pkt_get_payload(received_packet));
+        fprintf(stderr , "sent ack  : %d\n", sent_status);
     return 0;
 }
 
