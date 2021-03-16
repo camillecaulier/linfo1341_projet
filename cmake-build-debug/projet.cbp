@@ -108,12 +108,6 @@
 		<Unit filename="C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/sender.c">
 			<Option target="projet"/>
 		</Unit>
-		<Unit filename="C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/trtp.c">
-			<Option target="projet"/>
-		</Unit>
-		<Unit filename="C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/trtp.h">
-			<Option target="projet"/>
-		</Unit>
 		<Unit filename="C:/Users/charl/OneDrive - UCL/Bac 3/Q2/reseau/linfo1341_projet/src/wait_for_client.c">
 			<Option target="projet"/>
 		</Unit>

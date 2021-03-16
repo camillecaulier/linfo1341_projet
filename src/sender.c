@@ -46,13 +46,7 @@ void send_package(int sfd,char*filename){
     pkt_set_seqnum(send_packet, 0);
     pkt_set_timestamp(send_packet, 120);
 
-    poll_files_descriptors[0].fd  = fd;
-    poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
 
-    //POLLOUR //Alert me when I can send() data to this socket without blocking.
-
-    poll_files_descriptors[1].fd  = sfd;
-    poll_files_descriptors[1].events = POLLIN;
 
     int buffer_size = 512;
     char buffer[buffer_size];
@@ -63,6 +57,11 @@ void send_package(int sfd,char*filename){
 //    while( !feof(stdin)){
     while(1){
 
+        poll_files_descriptors[0].fd  = fd;
+        poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
+        //POLLOUR //Alert me when I can send() data to this socket without blocking.
+        poll_files_descriptors[1].fd  = sfd;
+        poll_files_descriptors[1].events = POLLIN;
 
         stdin_stdout = poll(poll_files_descriptors, 2 , -1);
         n = 0;
@@ -136,6 +135,8 @@ void send_package(int sfd,char*filename){
                 //renvoyer le packet avec le seqnum rcv->seqnum
             }
         }
+        if(feof(fptr))
+            return;
 
 
     }

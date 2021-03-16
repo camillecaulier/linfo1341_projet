@@ -262,33 +262,6 @@ src\sender.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\projet.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\projet.dir\src\sender.c.s
 .PHONY : src\sender.c.s
 
-src\trtp.obj: src\trtp.c.obj
-
-.PHONY : src\trtp.obj
-
-# target to build an object file
-src\trtp.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\projet.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\projet.dir\src\trtp.c.obj
-.PHONY : src\trtp.c.obj
-
-src\trtp.i: src\trtp.c.i
-
-.PHONY : src\trtp.i
-
-# target to preprocess a source file
-src\trtp.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\projet.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\projet.dir\src\trtp.c.i
-.PHONY : src\trtp.c.i
-
-src\trtp.s: src\trtp.c.s
-
-.PHONY : src\trtp.s
-
-# target to generate assembly for a file
-src\trtp.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\projet.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\projet.dir\src\trtp.c.s
-.PHONY : src\trtp.c.s
-
 src\wait_for_client.obj: src\wait_for_client.c.obj
 
 .PHONY : src\wait_for_client.obj
@@ -340,9 +313,6 @@ help:
 	@echo ... src/sender.obj
 	@echo ... src/sender.i
 	@echo ... src/sender.s
-	@echo ... src/trtp.obj
-	@echo ... src/trtp.i
-	@echo ... src/trtp.s
 	@echo ... src/wait_for_client.obj
 	@echo ... src/wait_for_client.i
 	@echo ... src/wait_for_client.s

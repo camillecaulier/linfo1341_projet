@@ -137,28 +137,9 @@ CMakeFiles\projet.dir\src\packet.c.s: cmake_force
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\projet.dir\src\packet.c.s /c "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\src\packet.c"
 <<
 
-CMakeFiles\projet.dir\src\trtp.c.obj: CMakeFiles\projet.dir\flags.make
-CMakeFiles\projet.dir\src\trtp.c.obj: ..\src\trtp.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/projet.dir/src/trtp.c.obj"
-	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx86\x86\cl.exe @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\projet.dir\src\trtp.c.obj /FdCMakeFiles\projet.dir\ /FS -c "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\src\trtp.c"
-<<
-
-CMakeFiles\projet.dir\src\trtp.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/projet.dir/src/trtp.c.i"
-	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx86\x86\cl.exe > CMakeFiles\projet.dir\src\trtp.c.i @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\src\trtp.c"
-<<
-
-CMakeFiles\projet.dir\src\trtp.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/projet.dir/src/trtp.c.s"
-	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx86\x86\cl.exe @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\projet.dir\src\trtp.c.s /c "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\src\trtp.c"
-<<
-
 CMakeFiles\projet.dir\src\create_socket.c.obj: CMakeFiles\projet.dir\flags.make
 CMakeFiles\projet.dir\src\create_socket.c.obj: ..\src\create_socket.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/projet.dir/src/create_socket.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/projet.dir/src/create_socket.c.obj"
 	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx86\x86\cl.exe @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\projet.dir\src\create_socket.c.obj /FdCMakeFiles\projet.dir\ /FS -c "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\src\create_socket.c"
 <<
@@ -177,7 +158,7 @@ CMakeFiles\projet.dir\src\create_socket.c.s: cmake_force
 
 CMakeFiles\projet.dir\src\wait_for_client.c.obj: CMakeFiles\projet.dir\flags.make
 CMakeFiles\projet.dir\src\wait_for_client.c.obj: ..\src\wait_for_client.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/projet.dir/src/wait_for_client.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/projet.dir/src/wait_for_client.c.obj"
 	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx86\x86\cl.exe @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\projet.dir\src\wait_for_client.c.obj /FdCMakeFiles\projet.dir\ /FS -c "C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\src\wait_for_client.c"
 <<
@@ -200,7 +181,6 @@ projet_OBJECTS = \
 "CMakeFiles\projet.dir\src\receiver.c.obj" \
 "CMakeFiles\projet.dir\src\sender.c.obj" \
 "CMakeFiles\projet.dir\src\packet.c.obj" \
-"CMakeFiles\projet.dir\src\trtp.c.obj" \
 "CMakeFiles\projet.dir\src\create_socket.c.obj" \
 "CMakeFiles\projet.dir\src\wait_for_client.c.obj"
 
@@ -211,12 +191,11 @@ projet.exe: CMakeFiles\projet.dir\src\log.c.obj
 projet.exe: CMakeFiles\projet.dir\src\receiver.c.obj
 projet.exe: CMakeFiles\projet.dir\src\sender.c.obj
 projet.exe: CMakeFiles\projet.dir\src\packet.c.obj
-projet.exe: CMakeFiles\projet.dir\src\trtp.c.obj
 projet.exe: CMakeFiles\projet.dir\src\create_socket.c.obj
 projet.exe: CMakeFiles\projet.dir\src\wait_for_client.c.obj
 projet.exe: CMakeFiles\projet.dir\build.make
 projet.exe: CMakeFiles\projet.dir\objects1.rsp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Linking C executable projet.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Linking C executable projet.exe"
 	"C:\Program Files\JetBrains\CLion 2020.3.2\bin\cmake\win\bin\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\projet.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100183~1.0\x86\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100183~1.0\x86\mt.exe --manifests  -- C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx86\x86\link.exe /nologo @CMakeFiles\projet.dir\objects1.rsp @<<
  /out:projet.exe /implib:projet.lib /pdb:"C:\Users\charl\OneDrive - UCL\Bac 3\Q2\reseau\linfo1341_projet\cmake-build-debug\projet.pdb" /version:0.0  /machine:X86 /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib 
 <<
