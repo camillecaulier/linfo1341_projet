@@ -68,6 +68,7 @@ void receive_package(const int sfd){
             if(pkt_get_tr(rcv_packet) != 1){
             avalaible_window ++;
             pkt_set_type(send_packet,PTYPE_ACK);
+            pkt_set_seqnum(send_packet,7);
             pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet)+1%255);
             pkt_encode(send_packet,ack,(size_t *)&size);
             int sent_status = send(sfd, ack,size, 0 );

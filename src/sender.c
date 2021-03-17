@@ -57,6 +57,7 @@ void send_package(int sfd,char*filename){
     char payload[512];
     char ** buffer_window = malloc(sizeof (char*));
     buffer_window[0] = malloc(512*sizeof (char ));
+    int *buffer_seqnum = malloc(sizeof(int));
 
    // char **buffer = (char *) malloc(window_size* sizeof(char *));
     //for(int i = 0 ; i< window_size ; i++){
@@ -140,12 +141,12 @@ void send_package(int sfd,char*filename){
 //            fprintf(stderr,"type de la data : %d \n",pkt_get_type(send_packet));
 //            fprintf(stderr,"seqnum de la data : %d \n",pkt_get_seqnum(send_packet));
             //send to socket
-            fprintf(stderr,"buffer sent : %s\n",pkt_get_payload(send_packet));
+          //  fprintf(stderr,"buffer sent : %s\n",pkt_get_payload(send_packet));
             int send_status = send(sfd,data,data_size, 0 );
             if(send_status == -1 ){
                 fprintf(stderr, "nothing sent");
             }
-            fprintf(stderr,"status sent : %d\n",send_status);
+
 
             memset((void *) buffer , 0 , buffer_size);
         }
@@ -166,35 +167,33 @@ void send_package(int sfd,char*filename){
             //ACK
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 //update window details
-
-                if(pkt_get_seqnum(rcv_packet) == 0 && first_ack){
+                fprintf(stderr,"seqnum  : %d\n",pkt_get_seqnum(rcv_packet));
+                if(pkt_get_seqnum(rcv_packet) == 0 && first_ack) {
                     first_ack = 0;
                     receiver_window_max = pkt_get_window(rcv_packet);
                     free(buffer_window[0]);
                     free(buffer_window);
-
                     *buffer_window = (char *) malloc(receiver_window_max * sizeof(char *));
-                    for(int i = 0 ; i < receiver_window_max; i++){
-                        buffer_window[i] = malloc(MAX_PAYLOAD_SIZE * sizeof (char));
+                    for (int i = 0; i < receiver_window_max; i++) {
+                        buffer_window[i] = malloc(MAX_PAYLOAD_SIZE * sizeof(char));
                     }
-
-
                 }
 
-            fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
-            receiver_window_space -= 1 ;
-            fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
-            fprintf(stderr, "received acck\n");
+
+                fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
+                receiver_window_space -= 1 ;
+                fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
+                fprintf(stderr, "received acck\n");
 
             //setting new seqnum for send_packet
             //pkt_set_window(send_packet,pkt_get_window(rcv_packet));
             //condition for the window !!!
-            int actual_seqnum = (pkt_get_seqnum(rcv_packet)+1)%255;
+                int actual_seqnum = (pkt_get_seqnum(rcv_packet)+1)%255;
 
-            if(oldest_seqnum +1 == actual_seqnum ){
-                oldest_seqnum = actual_seqnum;
-            }
-            pkt_set_seqnum(send_packet,actual_seqnum);
+                if(oldest_seqnum +1 == actual_seqnum ){
+                    oldest_seqnum = actual_seqnum;
+                }
+                pkt_set_seqnum(send_packet,actual_seqnum);
 
             }
 
