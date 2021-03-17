@@ -162,13 +162,14 @@ void send_package(int sfd,char*filename){
             }
             //fprintf(stderr,"Ack received \n");
             pkt_decode(recv_buff,recv_status,rcv_packet);
-
+             fprintf(stderr, "RESPONSE OF RECEIVER\n");
 
             //ACK
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 //update window details
                 fprintf(stderr,"seqnum  : %d\n",pkt_get_seqnum(rcv_packet));
                 if(pkt_get_seqnum(rcv_packet) == 0 && first_ack) {
+                    fprintf(stderr, "FIRST ACK RECEIVED \n");
                     first_ack = 0;
                     receiver_window_max = pkt_get_window(rcv_packet);
                     free(buffer_window[0]);
@@ -183,11 +184,11 @@ void send_package(int sfd,char*filename){
                 fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
                 receiver_window_space -= 1 ;
                 fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
-                fprintf(stderr, "received acck\n");
 
-            //setting new seqnum for send_packet
-            //pkt_set_window(send_packet,pkt_get_window(rcv_packet));
-            //condition for the window !!!
+
+                //setting new seqnum for send_packet
+                //pkt_set_window(send_packet,pkt_get_window(rcv_packet));
+                //condition for the window !!!
                 int actual_seqnum = (pkt_get_seqnum(rcv_packet)+1)%255;
 
                 if(oldest_seqnum +1 == actual_seqnum ){

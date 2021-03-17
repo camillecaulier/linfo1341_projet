@@ -41,7 +41,9 @@ int wait_for_client(int sfd){
     }
     pkt_set_type(sent_ack,PTYPE_ACK);
     pkt_set_window(sent_ack,31);
+
     pkt_set_seqnum(sent_ack,0);
+
     char ack[12];
     int size = 0;
     pkt_encode(sent_ack,ack,(size_t *)&size);
