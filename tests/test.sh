@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "running test.sh"
 # cleanup d'un test précédent
 rm -f received_file input_file
 

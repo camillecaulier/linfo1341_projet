@@ -47,7 +47,7 @@ mrproper:
 # It is likely that you will need to update this
 #./tests/run_tests.sh
 tests: all
-	./tests/test.sh
+	./tests/run_tests.sh
 
 # By default, logs are disabled. But you can enable them with the debug target.
 debug: CFLAGS += -D_DEBUG
