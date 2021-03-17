@@ -168,7 +168,7 @@ void send_package(int sfd,char*filename){
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 received++;
                 //update window details
-                if(pkt_get_seqnum(rcv_packet) == 0 && first_ack)
+                if(first_ack)
                 {
                     fprintf(stderr, "ack seqnum : %d", pkt_get_seqnum(rcv_packet));
                     first_ack = 0;
