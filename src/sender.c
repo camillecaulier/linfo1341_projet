@@ -88,6 +88,7 @@ void send_package(int sfd,char*filename){
 
         //if(able_to_send);
         //then enter = 1;
+
         if(poll_files_descriptors[0].revents & POLLIN && receiver_window_space+1 <= receiver_window_max) { //
             receiver_window_space+=1;
             //receiver_window_space +=1; // for the next iteration
@@ -153,7 +154,9 @@ void send_package(int sfd,char*filename){
             //ACK
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 //update window details
-                receiver_window_max = pkt_get_window(rcv_packet);
+                if(pkt_get_seqnum(rcv_packet) == 0){
+                receiver_window_max = pkt_get_window(rcv_packet);}
+
                 fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
                 receiver_window_space -= 1 ;
                 fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
