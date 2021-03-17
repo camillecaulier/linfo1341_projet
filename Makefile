@@ -45,8 +45,9 @@ mrproper:
 	rm -f $(SENDER) $(RECEIVER)
 
 # It is likely that you will need to update this
+#./tests/run_tests.sh
 tests: all
-	./tests/run_tests.sh
+	./tests/test.sh
 
 # By default, logs are disabled. But you can enable them with the debug target.
 debug: CFLAGS += -D_DEBUG
