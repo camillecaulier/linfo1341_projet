@@ -67,6 +67,8 @@ void send_package(int sfd,char*filename){
     fcntl(fd, F_SETFL, O_NONBLOCK);
     fcntl(sfd, F_SETFL, O_NONBLOCK);
 
+    int first_ack = 1;
+
 
 
 
@@ -165,13 +167,17 @@ void send_package(int sfd,char*filename){
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 //update window details
 
-                if(pkt_get_seqnum(rcv_packet) == 0){
-                receiver_window_max = pkt_get_window(rcv_packet);
-                free(&buffer_window);
-                realloc(buffer_window,receiver_window_max*sizeof (char *));
-                for(int i = 1 ; i< receiver_window_max;i++){
-                    buffer_window[i] = malloc(512*sizeof (char));
+                if(pkt_get_seqnum(rcv_packet) == 0 && first_ack){
+                    first_ack = 0;
+                    receiver_window_max = pkt_get_window(rcv_packet);
+                    free(buffer_window[0]);
+                    free(buffer_window);
+
+                    *buffer_window = (char *) malloc(receiver_window_max * sizeof(char *));
+                    for(int i = 0 ; i < receiver_window_max; i++){
+                        buffer_window[i] = malloc(MAX_PAYLOAD_SIZE * sizeof (char));
                     }
+
 
                 }
 
@@ -184,10 +190,12 @@ void send_package(int sfd,char*filename){
             //pkt_set_window(send_packet,pkt_get_window(rcv_packet));
             //condition for the window !!!
             int actual_seqnum = (pkt_get_seqnum(rcv_packet)+1)%255;
+
             if(oldest_seqnum +1 == actual_seqnum ){
                 oldest_seqnum = actual_seqnum;
             }
             pkt_set_seqnum(send_packet,actual_seqnum);
+
             }
 
             //NACK
@@ -201,21 +209,21 @@ void send_package(int sfd,char*filename){
                 return;
             }
 
+         }
+        if(feof(fptr)){
+            pkt_set_length(send_packet,0);
+            n = 0;
+            char data[16];
+            int data_size = 16;
+            pkt_encode(send_packet,data ,(size_t *)&data_size);
+            int send_status = send(sfd,data,data_size, 0 );
+            if(send_status == -1 ){
+                fprintf(stderr, "nothing sent");
             }
-            if(feof(fptr)){
-                pkt_set_length(send_packet,0);
-                n = 0;
-                char data[16];
-                int data_size = 16;
-                pkt_encode(send_packet,data ,(size_t *)&data_size);
-                int send_status = send(sfd,data,data_size, 0 );
-                if(send_status == -1 ){
-                    fprintf(stderr, "nothing sent");
-                }
-                fprintf(stderr,"status sent : %d\n",send_status);
+            fprintf(stderr,"status sent : %d\n",send_status);
 
-                return;
-            }
+            return;
+        }
 
 
     }
