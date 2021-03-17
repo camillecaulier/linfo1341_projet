@@ -225,11 +225,11 @@ void send_package(int sfd,char*filename){
                 //setting new seqnum for send_packet
                 //pkt_set_window(send_packet,pkt_get_window(rcv_packet));
                 //condition for the window !!!
-                int ack_seqnum = (pkt_get_seqnum(rcv_packet)+1)%255;
+                int ack_seqnum = (pkt_get_seqnum(rcv_packet));
                 buffer_seqnum[pkt_get_seqnum(rcv_packet)] = -1;
 
-                if((oldest_seqnum +1)%255 == ack_seqnum ){
-                    oldest_seqnum = ack_seqnum;
+                if((oldest_seqnum) == (ack_seqnum) ){
+                    oldest_seqnum = (ack_seqnum+1)%255;
                 }
 
             }
