@@ -127,7 +127,7 @@ void send_package(int sfd,char*filename){
             receiver_window_space+=1;
             acutal_seqnum = (acutal_seqnum + 1) % 255;
             //receiver_window_space +=1; // for the next iteration
-            fprintf(stderr , "frist poll \n");
+
 
 
             //readable et il y qqch
@@ -148,7 +148,7 @@ void send_package(int sfd,char*filename){
             char data[data_initial];
             int data_size = 16+n;
 
-            fprintf(stderr,"length : %d\n",pkt_get_length(send_packet));
+
             if(pkt_encode(send_packet, data ,(size_t *)&data_size) !=PKT_OK){
                 fprintf(stderr,"erreur encode\n");
             }
@@ -181,7 +181,7 @@ void send_package(int sfd,char*filename){
 
          if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
 
-            fprintf(stderr, "entering poll\n ");
+
             char recv_buff[1024];
             int recv_status = recv(sfd, recv_buff, 1024, 0);
             if(recv_status == -1){
@@ -201,7 +201,7 @@ void send_package(int sfd,char*filename){
                 {
                     first_ack = 0;
                     receiver_window_max = pkt_get_window(rcv_packet);
-                    fprintf(stderr, "FIRST ACK RECEIVED \n");
+
                     free(buffer_window);
                     free(buffer_seqnum);
                     buffer_seqnum = malloc(receiver_window_max*sizeof(int));
@@ -271,7 +271,7 @@ void send_package(int sfd,char*filename){
             if(send_status == -1 ){
                 fprintf(stderr, "nothing sent");
             }
-            fprintf(stderr,"status sent : %d\n",send_status);
+
 
             return;
         }

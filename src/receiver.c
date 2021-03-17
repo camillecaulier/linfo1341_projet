@@ -44,7 +44,7 @@ void receive_package(const int sfd){
         poll_files_descriptors[0].fd  = sfd;
         poll_files_descriptors[0].events = POLLIN;
         stdin_stdout = poll(poll_files_descriptors, 1 , -1);
-        fprintf(stderr,"im here\n");
+
         memset((void *) buffer, 0, buffer_size);
         if(poll_files_descriptors[0].revents & POLLIN ){
             memset((void *) buffer, 0, buffer_size);
@@ -64,17 +64,24 @@ void receive_package(const int sfd){
 
             pkt_set_window(send_packet,avalaible_window);
             fprintf(stderr,"taille du message recu : %d\n",receive_status);
-            fprintf(stderr,"message recu : %s\n",pkt_get_payload(rcv_packet));
+
             char ack[12];
             int size = 0;
             if(pkt_get_tr(rcv_packet) != 1){
+            int write_status = fwrite(pkt_get_payload(rcv_packet),1,pkt_get_length(rcv_packet),stdout);
+
+            if(write_status <= 0){
+                printf("error writing to stdout \n");
+                fflush(stdout);
+            }
+
             avalaible_window ++;
             pkt_set_type(send_packet,PTYPE_ACK);
 
             pkt_set_seqnum(send_packet,(pkt_get_seqnum(rcv_packet)+1)%255);
             pkt_encode(send_packet,ack,(size_t *)&size);
             int sent_status = send(sfd, ack,size, 0 );
-            fprintf(stderr , "sent ack  : %d\n", sent_status);
+            fprintf(stderr , "sent ack\n");
             //insere dans la ll et renvoie
             memset((void *) buffer, 0, buffer_size);
             }
@@ -83,7 +90,7 @@ void receive_package(const int sfd){
                 pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
                 pkt_encode(send_packet,ack,(size_t *)&size);
                 int sent_status = send(sfd, ack,size, 0 );
-                fprintf(stderr , "sent ack  : %d\n", sent_status);
+                fprintf(stderr , "sent Nack\n");
                 //insere dans la ll et renvoie
                 memset((void *) buffer, 0, buffer_size);
             }
