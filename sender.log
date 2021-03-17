@@ -2,3 +2,12 @@
 [91m[ERROR] This is not an error, now let's code![0m
 frist poll 
 length : 512
+entering poll
+ RESPONSE OF RECEIVER
+seqnum  : 0
+FIRST ACK RECEIVED 
+max : 31 , space : 1
+max : 31 , space : 0
+frist poll 
+nothing read length : 0
+status sent : 16
