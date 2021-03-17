@@ -39,6 +39,7 @@ void receive_package(const int sfd){
     fcntl(sfd, F_SETFL, O_NONBLOCK);
     fcntl(1, F_SETFL, O_NONBLOCK);
 
+    int first = 0;
 
     while(1){
         poll_files_descriptors[0].fd  = sfd;
@@ -68,22 +69,30 @@ void receive_package(const int sfd){
             char ack[12];
             int size = 0;
             if(pkt_get_tr(rcv_packet) != 1){
-            int write_status = fwrite(pkt_get_payload(rcv_packet),1,pkt_get_length(rcv_packet),stdout);
+                fprintf(stderr, "========================");
+                int write_status = fwrite(pkt_get_payload(rcv_packet),1,pkt_get_length(rcv_packet),stdout);
+                fprintf(stderr, "============================");
 
-            if(write_status <= 0){
-                printf("error writing to stdout \n");
-                fflush(stdout);
-            }
+                if(write_status <= 0){
+                    printf("error writing to stdout \n");
+                    fflush(stdout);
+                }
 
-            avalaible_window ++;
-            pkt_set_type(send_packet,PTYPE_ACK);
+                avalaible_window ++;
+                pkt_set_type(send_packet,PTYPE_ACK);
 
-            pkt_set_seqnum(send_packet,(pkt_get_seqnum(rcv_packet)+1)%255);
-            pkt_encode(send_packet,ack,(size_t *)&size);
-            int sent_status = send(sfd, ack,size, 0 );
-            fprintf(stderr , "sent ack\n");
-            //insere dans la ll et renvoie
-            memset((void *) buffer, 0, buffer_size);
+                pkt_set_seqnum(send_packet,(pkt_get_seqnum(rcv_packet)+1)%255);
+                if(first ==0){
+                    first = 10;
+                    pkt_set_seqnum(send_packet,7);
+                    fprintf(stderr,"sending ack 7\n");
+                }
+
+                pkt_encode(send_packet,ack,(size_t *)&size);
+                int sent_status = send(sfd, ack,size, 0 );
+                fprintf(stderr , "sent ack\n");
+                //insere dans la ll et renvoie
+                memset((void *) buffer, 0, buffer_size);
             }
             else{
                 pkt_set_type(send_packet,PTYPE_NACK);

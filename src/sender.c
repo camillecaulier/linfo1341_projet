@@ -199,6 +199,7 @@ void send_package(int sfd,char*filename){
 
                 if(pkt_get_seqnum(rcv_packet) == 0 && first_ack)
                 {
+                    fprintf(stderr, "ack seqnum : %d", pkt_get_seqnum(rcv_packet));
                     first_ack = 0;
                     receiver_window_max = pkt_get_window(rcv_packet);
 
