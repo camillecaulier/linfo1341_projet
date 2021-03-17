@@ -28,7 +28,7 @@ void receive_package(const int sfd){
     struct pollfd poll_files_descriptors[1];
     int stdin_stdout;
     int seqnum;
-    int avalaible_window = 32;
+    int avalaible_window = 31;
     poll_files_descriptors[0].fd  = sfd;
     poll_files_descriptors[0].events = POLLIN;
     pkt_t *send_packet = pkt_new();
@@ -56,18 +56,33 @@ void receive_package(const int sfd){
             avalaible_window --;
 
             pkt_decode(buffer,receive_status,rcv_packet);
-            pkt_set_window(rcv_packet,pkt_get_window(send_packet));
+
+            if(pkt_get_length(rcv_packet) ==0)
+                return;
+
+            pkt_set_window(send_packet,avalaible_window);
             fprintf(stderr,"taille du message recu : %d\n",receive_status);
             fprintf(stderr,"message recu : %s\n",pkt_get_payload(rcv_packet));
             char ack[12];
             int size = 0;
+            if(pkt_get_tr(rcv_packet) != 1){
+            avalaible_window ++;
             pkt_set_type(send_packet,PTYPE_ACK);
             pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet)+1%255);
             pkt_encode(send_packet,ack,(size_t *)&size);
             int sent_status = send(sfd, ack,size, 0 );
             fprintf(stderr , "sent ack  : %d\n", sent_status);
             //insere dans la ll et renvoie
-            memset((void *) buffer, 0, buffer_size);
+            memset((void *) buffer, 0, buffer_size);}
+            else{
+                pkt_set_type(send_packet,PTYPE_NACK);
+                pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
+                pkt_encode(send_packet,ack,(size_t *)&size);
+                int sent_status = send(sfd, ack,size, 0 );
+                fprintf(stderr , "sent ack  : %d\n", sent_status);
+                //insere dans la ll et renvoie
+                memset((void *) buffer, 0, buffer_size);
+            }
 
         }
 

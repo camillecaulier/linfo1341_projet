@@ -85,10 +85,11 @@ void send_package(int sfd,char*filename){
 
 
         //check if something in the stdin and send to socket
-        receiver_window_space+= 1;
+
         //if(able_to_send);
         //then enter = 1;
-        if(poll_files_descriptors[0].revents & POLLIN && receiver_window_space <= receiver_window_max) { //
+        if(poll_files_descriptors[0].revents & POLLIN && receiver_window_space+1 <= receiver_window_max) { //
+            receiver_window_space+=1;
             //receiver_window_space +=1; // for the next iteration
             fprintf(stderr , "frist poll \n");
 
@@ -153,8 +154,9 @@ void send_package(int sfd,char*filename){
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 //update window details
                 receiver_window_max = pkt_get_window(rcv_packet);
+                fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
                 receiver_window_space -= 1 ;
-                fprintf(stderr, "max : %d , space : %d", receiver_window_max , receiver_window_space);
+                fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
                 fprintf(stderr, "received acck\n");
 
                 //setting new seqnum for send_packet
@@ -164,7 +166,7 @@ void send_package(int sfd,char*filename){
             }
 
             //NACK
-            else if(pkt_get_type(rcv_packet) == PTYPE_NACK && pkt_get_tr(rcv_packet) == 1){
+            else if(pkt_get_type(rcv_packet) == PTYPE_NACK){
                 memset((void *) buffer , 0 , buffer_size);
             }
 
@@ -175,6 +177,17 @@ void send_package(int sfd,char*filename){
 
         }
         if(feof(fptr)){
+            pkt_set_length(send_packet,0);
+            n = 0;
+            char data[16];
+            int data_size = 16;
+            pkt_encode(send_packet,data ,(size_t *)&data_size);
+            int send_status = send(sfd,data,data_size, 0 );
+            if(send_status == -1 ){
+                fprintf(stderr, "nothing sent");
+            }
+            fprintf(stderr,"status sent : %d\n",send_status);
+
             return;
         }
 
