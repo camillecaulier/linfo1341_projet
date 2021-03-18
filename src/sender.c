@@ -34,6 +34,14 @@ void send_package(int sfd,char*filename){
     int fd = fileno(fptr);
     int n;
     struct pollfd poll_files_descriptors[2];
+    if(fd == 0){
+        //create poll descriptors
+        poll_files_descriptors[0].fd  = fd;
+        poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
+
+        poll_files_descriptors[1].fd  = sfd;
+        poll_files_descriptors[1].events = POLLIN;
+    }
     int stdin_stdout;
     int receiver_window_space= 0;
     int receiver_window_max = 1;
@@ -73,12 +81,13 @@ void send_package(int sfd,char*filename){
 
     while(1){
         //create poll descriptors
+        if(fd != 0){
         poll_files_descriptors[0].fd  = fd;
         poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
 
         poll_files_descriptors[1].fd  = sfd;
-        poll_files_descriptors[1].events = POLLIN;
-        stdin_stdout = poll(poll_files_descriptors, 2 , 50);
+        poll_files_descriptors[1].events = POLLIN;}
+        stdin_stdout = poll(poll_files_descriptors, 2 , 5000);
         //error on stdin
         if(stdin_stdout == -1){
             perror("poll not working ");
@@ -86,8 +95,11 @@ void send_package(int sfd,char*filename){
         }
         //cas de timeout on envoie le oldest
         if(stdin_stdout == 0){
+            fprintf(stderr,"oldest_seqnum %d\n",oldest_seqnum);
+
             //On recupere le payload et le seqnum dans les buffer pour renvoyer le packet
             char *buff_Ack = buffer_window[oldest_seqnum];
+            fprintf(stderr,"buff_ack : %s\n",buffer_window[oldest_seqnum]);
             int len = 16 + strlen(buff_Ack);
             char data[len];
             pkt_set_seqnum(send_packet,oldest_seqnum);
@@ -148,7 +160,9 @@ void send_package(int sfd,char*filename){
                 fprintf(stderr, "nothing sent");
             }
             //put the payload and seqnum in buffer
+            fprintf(stderr,"putted in the buff at the position : %d\n",pkt_get_seqnum(send_packet)%receiver_window_max);
             buffer_window[pkt_get_seqnum(send_packet)%receiver_window_max] = buffer;
+            fprintf(stderr,"the buffer is then : %s\n",buffer_window[pkt_get_seqnum(send_packet)%receiver_window_max]);
             buffer_seqnum[pkt_get_seqnum(send_packet)%receiver_window_max] = pkt_get_seqnum(send_packet);
             fprintf(stderr,"seqnum de la data : %d \n",pkt_get_seqnum(send_packet));
             memset((void *) buffer , 0 , buffer_size);
