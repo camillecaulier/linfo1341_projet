@@ -19,7 +19,7 @@ int wait_for_client(int sfd){
     char buffer[1050];
 
     len = sizeof(client_address);
-    int response_status = recvfrom(sfd, buffer, 1050, 0, (struct sockaddr*)&client_address, (socklen_t *)& len);
+    int response_status = recvfrom(sfd, buffer, 1050, MSG_PEEK, (struct sockaddr*)&client_address, (socklen_t *)& len);
     if(response_status < 0){
         fprintf(stderr, "fail of resonse (wait for client)");
         fflush(stdout);
@@ -42,7 +42,7 @@ int wait_for_client(int sfd){
 //    pkt_set_type(sent_ack,PTYPE_ACK);
 //    pkt_set_window(sent_ack,31);
 //
-//    pkt_set_seqnum(sent_ack,7);
+//    pkt_set_seqnum(sent_ack,0);
 //
 //    char ack[12];
 //    int size = 0;

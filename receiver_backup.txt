@@ -83,19 +83,12 @@ void receive_package(const int sfd){
             if(first_message){//we make the first message for the first ptype data we get
                 first_message= 0;
 
-                fprintf(stderr , "WE ARE AT FIRST MESSAGE\n");
-
                 pkt_set_type(send_packet,PTYPE_ACK);
                 pkt_set_tr(send_packet, 0);
                 pkt_set_window(send_packet,window_available);
                 pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
 
                 pkt_encode(send_packet,ack ,(size_t*) &size);
-                int sent_status = send(sfd, ack,size, 0 );
-                if(sent_status == -1){
-                    perror("first ack not sent");
-                }
-                fprintf(stderr , "sent first ack\n");
                 memset((void *) ack, 0, 12);
 
             }
@@ -120,10 +113,6 @@ void receive_package(const int sfd){
 
                     pkt_encode(send_packet,ack,(size_t *)&size);
                     int sent_status = send(sfd, ack,size, 0 );
-                    if(sent_status == -1){
-                        perror("first ack not sent");
-                    }
-
                     fprintf(stderr , "sent ack\n");
                     //insere dans la ll et renvoie
                     memset((void *) ack, 0, 12);

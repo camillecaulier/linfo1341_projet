@@ -182,8 +182,7 @@ pkt_status_code pkt_decode(const char *data, const size_t len, pkt_t *pkt)
         //time to decode all the data
         if(length > 0 ){
             //chck the crc2 before readign all the data
-            fprintf(stderr,"here3");
-            fflush(stderr);
+
 
             uint32_t crc2;
             memcpy(&crc2 , 12+data+length, 4);

@@ -163,7 +163,7 @@ void send_package(int sfd,char*filename){
             }
             //fprintf(stderr,"Ack received \n");
             pkt_decode(recv_buff,recv_status,rcv_packet);
-            fprintf(stderr, "RESPONSE OF RECEIVER\n");
+            fprintf(stderr, "RESPONSE OF RECEIVER SEQ : %d\n", pkt_get_seqnum(rcv_packet));
             //ACK
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 received++;
