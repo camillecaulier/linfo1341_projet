@@ -18,7 +18,7 @@
 #include "packet.h"
 #include <math.h>
 
-#define BUFF_LEN 
+#define BUFF_LEN
 
 int print_usage(char *prog_name) {
     ERROR("Usage:\n\t%s [-f filename] [-s stats_filename] receiver_ip receiver_port", prog_name);
@@ -154,7 +154,7 @@ void send_package(int sfd,char*filename){
             memset((void *) buffer , 0 , buffer_size);
         }
         //case we received something in the socket(ACK/NACK)
-         if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
+        if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
             char recv_buff[1024];
             int recv_status = recv(sfd, recv_buff, 1024, 0);
             if(recv_status == -1){
@@ -163,7 +163,7 @@ void send_package(int sfd,char*filename){
             }
             //fprintf(stderr,"Ack received \n");
             pkt_decode(recv_buff,recv_status,rcv_packet);
-            fprintf(stderr, "RESPONSE OF RECEIVER SEQ : %d\n", pkt_get_seqnum(rcv_packet));
+            fprintf(stderr, "RESPONSE OF RECEIVER\n");
             //ACK
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 received++;
@@ -202,7 +202,7 @@ void send_package(int sfd,char*filename){
                     }
                 }
             }
-            //NACK
+                //NACK
             else if(pkt_get_type(rcv_packet) == PTYPE_NACK){
                 //sending the packet non-acknowledged
                 char *buff_Ack = buffer_window[pkt_get_seqnum(rcv_packet)];
@@ -221,7 +221,7 @@ void send_package(int sfd,char*filename){
                 perror("Sender received data type \n");
                 return;
             }
-         }
+        }
         if(feof(fptr)){
             //wait for all acknowledgement
             if(sent != received)
@@ -257,17 +257,17 @@ int main(int argc, char **argv) {
 
     while ((opt = getopt(argc, argv, "f:s:h")) != -1) {
         switch (opt) {
-        case 'f':
-            filename = optarg;
+            case 'f':
+                filename = optarg;
 
-            break;
-        case 'h':
-            return print_usage(argv[0]);
-        case 's':
-            stats_filename = optarg;
-            break;
-        default:
-            return print_usage(argv[0]);
+                break;
+            case 'h':
+                return print_usage(argv[0]);
+            case 's':
+                stats_filename = optarg;
+                break;
+            default:
+                return print_usage(argv[0]);
         }
     }
 
@@ -288,7 +288,7 @@ int main(int argc, char **argv) {
 
     // This is not an error per-se.
     ERROR("Sender has following arguments: filename is %s, stats_filename is %s, receiver_ip is %s, receiver_port is %u",
-        filename, stats_filename, receiver_ip, receiver_port);
+          filename, stats_filename, receiver_ip, receiver_port);
 
     DEBUG("You can only see me if %s", "you built me using `make debug`");
     ERROR("This is not an error, %s", "now let's code!");
