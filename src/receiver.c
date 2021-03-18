@@ -28,7 +28,9 @@ void receive_package(const int sfd){
     struct pollfd poll_files_descriptors[1];
     int stdin_stdout;
     int seqnum;
+
     int window_available = 7; //WINDOW SIZE => MAX IS 31
+    int *buff_seqnum = malloc(window_available*sizeof (int));
     poll_files_descriptors[0].fd  = sfd;
     poll_files_descriptors[0].events = POLLIN;
     pkt_t *send_packet = pkt_new();
@@ -78,6 +80,11 @@ void receive_package(const int sfd){
             //CREATE THE FIRST ACK
             if(first_message){//we make the first message for the first ptype data we get
                 first_message= 0;
+                //if doublon
+                if(buff_seqnum[pkt_get_seqnum(rcv_packet)%31] == pkt_get_seqnum(rcv_packet)){
+                    continue;
+                }
+                buff_seqnum[pkt_get_seqnum(rcv_packet)%31] = pkt_get_seqnum(rcv_packet);
 
                 fprintf(stderr , "WE ARE AT FIRST MESSAGE\n");
 
