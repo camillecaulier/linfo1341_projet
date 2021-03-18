@@ -13,7 +13,7 @@ link_pid=$!
 # On lance le receiver et capture sa sortie standard
 #./receiver -f received_file :: 2456  2> receiver.log &
 #receiver_pid=$!
-./receiver :: 2456 1>received_file  2> receiver.log &
+./src/receiver :: 2456 1>received_file  2> receiver.log &
 receiver_pid=$!
 
 cleanup()
@@ -25,7 +25,7 @@ cleanup()
 trap cleanup SIGINT  # Kill les process en arrière plan en cas de ^-C
 
 # On démarre le transfert
-if ! ./sender ::1 1341 < input_file 2> sender.log ; then
+if ! ./src/sender ::1 1341 < input_file 2> sender.log ; then
   echo "Crash du sender!"
   cat sender.log
   err=1  # On enregistre l'erreur

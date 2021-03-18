@@ -1,7 +1,1 @@
-[91m[ERROR] Receiver has following arguments: stats_filename is (null), listen_ip is ::, listen_port is 2456[0m
-[91m[ERROR] This is not an error, now let's code![0m
-buffer : A
-here3le message est : ––cm™îﬁ∏ÿÆë=0˝∑ê?”{ú%ïpx92ázîì]ü§”¨Á¶f!√ù°áÏ‚“Mû%ÚìC›Ø`¸7åZl0£53â2˘∑'	$oxJP|-t©¨¬ˆBvOØd—£º≈sΩ¨N“nÿ'R9Å'ò˜√jhûjh#r•x9ê†mnEcKŸhïáSËp∂õUD[\dg2°Ã[ñŸ”—/–\áœıai]K‰EHlW!Á2“Ô·A`G€h3
-,\Xz⁄}'0ó6gÖM,èç¥D≤/€í≠*1à˚¿Hüò∆ú±ÑÅu{˝l_HüΩKNë£KõÙ‡õΩ∆â#VÕÔä∆«ß @ÏÜãlÿinx[ç>hö2yd¿Ü<É†ÕØE1ÀúÛΩ„4Éyõp(Rì Qª ≤àœBë¥ΩutP»+¢6li$m‚à≈≈√9è$ÈÖ˛≠6ÍsZ√ª®\◊Ä˙ı∞·¢¡‡N·ÇÔ”ÃR	cê,O%JRq⁄≈Ñﬁ_[$!s®<Âst∏fuæ
-FÌ2∆˚daì˛˝ºz2∑¨Ç˘⁄*6R◊Uà;¥˙@«ªd‚vﬁ≠	‚Äi‚tZ±˙ÒﬁÄ4ÊÌı@ùJ©gKOæHp|)Ò)++à®πP0-^∫õg°cñÛ 
-sent ack  : 10
+test.sh: line 16: ./src/receiver: No such file or directory

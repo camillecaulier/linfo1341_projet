@@ -1,7 +1,1 @@
-[91m[ERROR] Sender has following arguments: filename is (null), stats_filename is (null), receiver_ip is ::1, receiver_port is 1341[0m
-[91m[ERROR] This is not an error, now let's code![0m
-seqnum de la data : 1 
-RESPONSE OF RECEIVER
-max : 31 , space : 1
-max : 31 , space : 0
-nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read nothing read 
+test.sh: line 28: ./src/sender: No such file or directory
