@@ -236,6 +236,8 @@ void send_package(int sfd,char*filename){
             }
             pkt_del(send_packet);
             pkt_del(rcv_packet);
+            free(buffer_seqnum);
+            free(buffer_window);
             return;
         }
     }

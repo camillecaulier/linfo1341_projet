@@ -62,11 +62,7 @@ void receive_package(const int sfd){
             if (pkt_decode(buffer,receive_status,rcv_packet)!= PKT_OK){
                 perror("error with the encode of decode receiver ");
             }
-            else{
-                perror("error again");
-            }
-            fprintf(stderr, "hello\n");
-            fflush(stderr);
+
             if(pkt_get_length(rcv_packet) ==0){
                 perror("no data was send to receiver ");
                 return;
