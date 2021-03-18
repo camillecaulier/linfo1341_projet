@@ -1,2 +1,24 @@
 [91m[ERROR] Receiver has following arguments: stats_filename is (null), listen_ip is ::, listen_port is 1112[0m
 [91m[ERROR] This is not an error, now let's code![0m
+buffer : A
+taille du message recu : 528
+WE ARE AT FIRST MESSAGE
+sent first ack
+taille du message recu : 528
+====================================================sent ack
+taille du message recu : 528
+====================================================sent ack
+taille du message recu : 528
+====================================================sent ack
+taille du message recu : 528
+====================================================sent ack
+taille du message recu : 528
+====================================================sent ack
+taille du message recu : 528
+====================================================sent ack
+taille du message recu : 528
+====================================================sent ack
+taille du message recu : 528
+====================================================sent ack
+taille du message recu : 384
+====================================================sent ack
