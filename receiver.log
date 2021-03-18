@@ -1,1 +1,2 @@
-test.sh: line 16: ./src/receiver: No such file or directory
+[91m[ERROR] Receiver has following arguments: stats_filename is (null), listen_ip is ::, listen_port is 1112[0m
+[91m[ERROR] This is not an error, now let's code![0m

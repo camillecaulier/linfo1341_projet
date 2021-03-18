@@ -1,1 +1,5 @@
-test.sh: line 28: ./src/sender: No such file or directory
+[91m[ERROR] Sender has following arguments: filename is (null), stats_filename is (null), receiver_ip is ::1, receiver_port is 3332[0m
+[91m[ERROR] This is not an error, now let's code![0m
+putted in the buff at the position : 0
+the buffer is then : ép1√	@Zù	 Ç[∞°–
+seqnum de la data : 1 
