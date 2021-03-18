@@ -201,6 +201,7 @@ void send_package(int sfd,char*filename){
 
                     *buffer_window = (char*)realloc(buffer_window,receiver_window_max * sizeof(char *));
                     fprintf(stderr,"deleting buff \n");
+                    fprintf(stderr, "receiver_window : %d\n", receiver_window_max);
                     for (int i = 1; i < receiver_window_max; i++) {
                         buffer_window[i] = (char*)malloc(MAX_PAYLOAD_SIZE * sizeof(char));
                     }
@@ -224,6 +225,7 @@ void send_package(int sfd,char*filename){
                         oldest_seqnum = (oldest_seqnum+1)%255;
                     }
                 }
+                fprintf(stderr,"i'm actually here");
             }
                 //NACK
             else if(pkt_get_type(rcv_packet) == PTYPE_NACK){
@@ -248,8 +250,9 @@ void send_package(int sfd,char*filename){
         }
         if(feof(fptr)){
             //wait for all acknowledgement
-            if(sent != received)
-                continue;
+            fprintf(stderr, "in the feof\n");
+//            if(sent != received)
+//                continue;
             pkt_set_length(send_packet,0);
             char data[16];
             int data_size = 16;
@@ -260,11 +263,13 @@ void send_package(int sfd,char*filename){
             }
             pkt_del(send_packet);
             pkt_del(rcv_packet);
-            free(buffer_seqnum);
-            for(int i = 0 ; i< receiver_window_max; i++){
-                free(buffer_window[i]);
-            }
-            free(buffer_window);
+//            free(buffer_seqnum);
+//            fprintf(stderr , "receiver_window_max : %d\n", receiver_window_max);
+//            for(int i = 0 ; i< receiver_window_max; i++){
+//                fprintf(stderr, "index : %d\n", i);
+//                free(buffer_window[i]);
+//            }
+//            free(buffer_window);
             return;
         }
     }
