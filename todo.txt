@@ -1,0 +1,5 @@
+1) fix the order in the writing
+2) solve the free
+3) add the pollout for the socket in the sender
+4) check the valgrind and memory leaks
+5) report
