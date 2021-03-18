@@ -66,7 +66,10 @@ void receive_package(const int sfd){
             }
 
             if(pkt_get_length(rcv_packet) ==0){
-                perror("no data was send to receiver ");
+                //end of sender
+                pkt_del(rcv_packet);
+                pkt_del(send_packet);
+                free(buff_seqnum);
                 return;
             }
 
@@ -85,9 +88,7 @@ void receive_package(const int sfd){
                     continue;
                 }
                 buff_seqnum[pkt_get_seqnum(rcv_packet)%31] = pkt_get_seqnum(rcv_packet);
-
                 fprintf(stderr , "WE ARE AT FIRST MESSAGE\n");
-
                 pkt_set_type(send_packet,PTYPE_ACK);
                 pkt_set_tr(send_packet, 0);
                 pkt_set_window(send_packet,window_available);
