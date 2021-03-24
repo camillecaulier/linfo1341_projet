@@ -39,8 +39,9 @@ void send_package(int sfd,char*filename){
         poll_files_descriptors[0].fd  = fd;
         poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
 
+        //POLL on the socket
         poll_files_descriptors[1].fd  = sfd;
-        poll_files_descriptors[1].events = POLLIN;
+        poll_files_descriptors[1].events = POLLIN | POLLOUT;
     }
     int stdin_stdout;
     int receiver_window_space= 0;
@@ -156,12 +157,12 @@ void send_package(int sfd,char*filename){
                 perror("error with allocating and memory encoding \n");
             }
             //sending packet
-            int send_status = send(sfd,data,data_size, 0 );
-            if(send_status !=0){
-                sent ++;}
-            if(send_status == -1 ){
-                fprintf(stderr, "nothing sent");
-            }
+//            int send_status = send(sfd,data,data_size, 0 );
+//            if(send_status !=0){
+//                sent ++;}
+//            if(send_status == -1 ){
+//                fprintf(stderr, "nothing sent");
+//            }
             //put the payload and seqnum in buffer
             fprintf(stderr,"putted in the buff at the position : %d\n",pkt_get_seqnum(send_packet)%receiver_window_max);
             buffer_window[pkt_get_seqnum(send_packet)%receiver_window_max] = buffer;
@@ -169,6 +170,14 @@ void send_package(int sfd,char*filename){
             fprintf(stderr,"seqnum de la data : %d \n",pkt_get_seqnum(send_packet));
             fprintf(stderr,"the buffer is then : %s\n",buffer_window[pkt_get_seqnum(send_packet)%receiver_window_max]);
 
+        }
+        if(poll_files_descriptors[1] & POLLOUT  && on a qqch a envoyer){ // verifie qu-on puisse ecrire dans le socckket
+            int send_status = send(sfd,data,data_size, 0 );
+//            if(send_status !=0){
+//                sent ++;}
+//            if(send_status == -1 ){
+//                fprintf(stderr, "nothing sent");
+//            }
         }
         //case we received something in the socket(ACK/NACK)
         if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
