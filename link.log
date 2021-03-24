@@ -1,4 +1,4 @@
-@@ Using random seed: 1616078958
+@@ Using random seed: 1616610194
 @@ Using parameters:
 .. port: 3332
 .. forward_port: 1112
@@ -7,33 +7,36 @@
 .. err_rate: 0
 .. cut_rate: 0
 .. loss_rate: 10
-.. seed: 1616078958
+.. seed: 1616610194
 .. link_direction: Both ways
-@@ Remote host is ::1 [50601]
+@@ Remote host is ::1 [55224]
 [SEQ   1] Delayed packet by 50 ms
 [SEQ   1] Sent packet (Forward).
 [SEQ   1] Delayed packet by 50 ms
 [SEQ   1] Sent packet (Reverse).
 [SEQ   2] Delayed packet by 50 ms
-[SEQ   3] Dropping packet
+[SEQ   3] Delayed packet by 50 ms
 [SEQ   4] Delayed packet by 50 ms
 [SEQ   5] Delayed packet by 50 ms
 [SEQ   6] Delayed packet by 50 ms
 [SEQ   7] Delayed packet by 50 ms
 [SEQ   8] Delayed packet by 50 ms
 [SEQ   2] Sent packet (Forward).
+[SEQ   3] Sent packet (Forward).
 [SEQ   4] Sent packet (Forward).
 [SEQ   5] Sent packet (Forward).
 [SEQ   6] Sent packet (Forward).
 [SEQ   2] Delayed packet by 50 ms
 [SEQ   7] Sent packet (Forward).
-[SEQ   4] Delayed packet by 50 ms
+[SEQ   3] Delayed packet by 50 ms
 [SEQ   8] Sent packet (Forward).
+[SEQ   4] Delayed packet by 50 ms
 [SEQ   5] Delayed packet by 50 ms
 [SEQ   6] Delayed packet by 50 ms
 [SEQ   7] Delayed packet by 50 ms
 [SEQ   8] Delayed packet by 50 ms
 [SEQ   2] Sent packet (Reverse).
+[SEQ   3] Sent packet (Reverse).
 [SEQ   4] Sent packet (Reverse).
 [SEQ   5] Sent packet (Reverse).
 [SEQ   6] Sent packet (Reverse).
@@ -49,9 +52,9 @@
 [SEQ  11] Sent packet (Forward).
 [SEQ   9] Delayed packet by 50 ms
 [SEQ  10] Delayed packet by 50 ms
-[SEQ  12] Sent packet (Forward).
-[SEQ  12] Sent packet (Forward).
 [SEQ  11] Delayed packet by 50 ms
+[SEQ  12] Sent packet (Forward).
+[SEQ  12] Sent packet (Forward).
 [SEQ  12] Delayed packet by 50 ms
 [SEQ   9] Sent packet (Reverse).
 [SEQ  10] Sent packet (Reverse).

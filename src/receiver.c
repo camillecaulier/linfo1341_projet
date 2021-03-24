@@ -107,9 +107,10 @@ void receive_package(const int sfd){
                 window_available --;
                 pkt_set_window(send_packet, window_available);
                 if(pkt_get_tr(rcv_packet) != 1){//not truncated
-                    fprintf(stderr, "========================");
+                    fprintf(stderr, "========================\n");
                     int write_status = fwrite(pkt_get_payload(rcv_packet),1,pkt_get_length(rcv_packet),stdout);
-                    fprintf(stderr, "============================");
+                    fflush(stdout);
+                    fprintf(stderr, "============================\n");
 
                     if(write_status <= 0){
                         printf("error writing to stdout \n");

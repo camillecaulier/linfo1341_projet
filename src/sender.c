@@ -42,6 +42,7 @@ void send_package(int sfd,char*filename){
         //POLL on the socket
         poll_files_descriptors[1].fd  = sfd;
         poll_files_descriptors[1].events = POLLIN | POLLOUT;
+//        poll_files_descriptors[1].events = POLLIN;
     }
     int stdin_stdout;
     int receiver_window_space= 0;
@@ -83,11 +84,12 @@ void send_package(int sfd,char*filename){
     while(1){
         //create poll descriptors
         if(fd != 0){
-        poll_files_descriptors[0].fd  = fd;
-        poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
+            poll_files_descriptors[0].fd  = fd;
+            poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
 
-        poll_files_descriptors[1].fd  = sfd;
-        poll_files_descriptors[1].events = POLLIN;}
+            poll_files_descriptors[1].fd  = sfd;
+            poll_files_descriptors[1].events = POLLIN | POLLOUT;
+        }
         stdin_stdout = poll(poll_files_descriptors, 2 , 5000);
         //error on stdin
         if(stdin_stdout == -1){
@@ -129,7 +131,8 @@ void send_package(int sfd,char*filename){
             diff = -diff;
         }
         //We can read file and send to socket + conditions on sliding window + conditions on seqnums
-        if(poll_files_descriptors[0].revents & POLLIN && receiver_window_space+1 <= receiver_window_max && diff<=receiver_window_max) { //
+        //we also check if we have something in the socket and in the file and if we can write it to the socket
+        if(poll_files_descriptors[0].revents & POLLIN && receiver_window_space+1 <= receiver_window_max && diff<=receiver_window_max && poll_files_descriptors[1].revents & POLLOUT) { //&& poll_files_descriptors[1].revents & POLLOUT
             //increasing sliding window and actual seqnum
             receiver_window_space+=1;
             acutal_seqnum = (acutal_seqnum + 1) % 255;
@@ -148,37 +151,33 @@ void send_package(int sfd,char*filename){
             //encoding packet
             int data_initial = 16 + n;
             char data[data_initial];
-            int data_size = 16+n;
+            int data_size = 16 + n;
             if(pkt_encode(send_packet, data ,(size_t *)&data_size) !=PKT_OK){
                 fprintf(stderr,"erreur encode\n");
             }
+            fprintf(stderr, "DATA_SIZE : %d\n ", data_size);
             //check if initiated size is the same as sent size
             if(data_initial!= data_size){
                 perror("error with allocating and memory encoding \n");
             }
-            //sending packet
-//            int send_status = send(sfd,data,data_size, 0 );
-//            if(send_status !=0){
-//                sent ++;}
-//            if(send_status == -1 ){
-//                fprintf(stderr, "nothing sent");
-//            }
-            //put the payload and seqnum in buffer
+            int send_status = send(sfd,data,data_size, 0 );
+            if(send_status !=0){
+                sent ++;}
+            if(send_status == -1 ){
+                fprintf(stderr, "nothing sent");
+            }
+
             fprintf(stderr,"putted in the buff at the position : %d\n",pkt_get_seqnum(send_packet)%receiver_window_max);
             buffer_window[pkt_get_seqnum(send_packet)%receiver_window_max] = buffer;
             buffer_seqnum[pkt_get_seqnum(send_packet)%receiver_window_max] = pkt_get_seqnum(send_packet);
-            fprintf(stderr,"seqnum de la data : %d \n",pkt_get_seqnum(send_packet));
-            fprintf(stderr,"the buffer is then : %s\n",buffer_window[pkt_get_seqnum(send_packet)%receiver_window_max]);
+//            fprintf(stderr,"seqnum de la data : %d \n",pkt_get_seqnum(send_packet));
+//            fprintf(stderr,"the buffer is then : %s\n",buffer_window[pkt_get_seqnum(send_packet)%receiver_window_max]);
+
 
         }
-        if(poll_files_descriptors[1] & POLLOUT  && on a qqch a envoyer){ // verifie qu-on puisse ecrire dans le socckket
-            int send_status = send(sfd,data,data_size, 0 );
-//            if(send_status !=0){
-//                sent ++;}
-//            if(send_status == -1 ){
-//                fprintf(stderr, "nothing sent");
-//            }
-        }
+
+
+
         //case we received something in the socket(ACK/NACK)
         if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
             char recv_buff[1024];
