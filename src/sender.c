@@ -259,7 +259,7 @@ void send_package(int sfd,char*filename){
         if(feof(fptr)){
             //wait for all acknowledgement
             fprintf(stderr, "in the feof\n");
-            if(sent != received)
+            if(receiver_window_space != 0)
                 continue;
             pkt_set_length(send_packet,0);
             char data[16];
