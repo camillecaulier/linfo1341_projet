@@ -255,10 +255,18 @@ pkt_status_code pkt_decode(const char *data, const size_t len, pkt_t *pkt)
 pkt_status_code pkt_encode(const pkt_t* pkt, char *buf, size_t *len)
 {
     //verify error
-    if(!pkt_get_tr(pkt) && (size_t) *len < (size_t) (pkt_get_length(pkt) + 16) ){
-        perror("not enough memory");
-        fprintf(stderr, "error here 1 \n");
+    // nack ack size
+    size_t size_ack = 10;
+    size_t size_data = 16;
+
+    if((pkt_get_type(pkt) == PTYPE_ACK || pkt_get_type(pkt) == PTYPE_NACK) && (size_t) *len < size_ack ){
+        perror("not enough memory for ack and nack \n");
         return E_NOMEM;
+    }
+
+    if((pkt_get_type(pkt) == PTYPE_DATA) && (size_t) *len < size_data){
+        perror("not enough memory for data\n");
+        return E_NOMEM; 
     }
 
     ptypes_t type  = pkt_get_type(pkt);
