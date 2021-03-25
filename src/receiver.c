@@ -28,128 +28,183 @@ void receive_package(const int sfd){
     struct pollfd poll_files_descriptors[1];
     int stdin_stdout;
     int seqnum;
-
     int window_available = 7; //WINDOW SIZE => MAX IS 31
+    int actual_window = 0;
     int *buff_seqnum = malloc(window_available*sizeof (int));
     poll_files_descriptors[0].fd  = sfd;
     poll_files_descriptors[0].events = POLLIN;
-    pkt_t *send_packet = pkt_new();
     pkt_t *rcv_packet = pkt_new();
-
     char buffer[1050];
+    int is_empty_buff[256];
+    for (int i = 0; i < 256; ++i) {
+        is_empty_buff[i] = 0;
+    }
+    char payload_window[256][512];
     int buffer_size = 1050;
-    fcntl(sfd, F_SETFL, O_NONBLOCK);
-    fcntl(1, F_SETFL, O_NONBLOCK);
-
     int first_message = 1;
+    int poll_count;
 
     while(1){
-        poll_files_descriptors[0].fd  = sfd;
-        poll_files_descriptors[0].events = POLLIN;
-        stdin_stdout = poll(poll_files_descriptors, 1 , -1);
+        if (first_message){
+            poll_count = poll(poll_files_descriptors, 1,-1);
 
-        memset((void *) buffer, 0, buffer_size);
+        }
+
+        else {
+            poll_count = poll(poll_files_descriptors, 1,2000);
+        }
+
+        if (poll_count == -1) {
+            perror("poll error listening occured, breaking the loop");
+            pkt_del(rcv_packet);
+            return;
+        }
+
         if(poll_files_descriptors[0].revents & POLLIN ){
 
 
-
-            memset((void *) buffer, 0, buffer_size);
             int receive_status = recv(sfd, buffer, buffer_size, 0);
             if(receive_status == -1){
-                fprintf(stderr,"nothing sent");
+                fprintf(stderr,"nothing received");
                 fflush(stdout);
-            }
-
-
-            if (pkt_decode(buffer,receive_status,rcv_packet)!= PKT_OK){
-                perror("error with the encode of decode receiver ");
-            }
-
-            if(pkt_get_length(rcv_packet) ==0){
-                //end of sender
-                pkt_del(rcv_packet);
-                pkt_del(send_packet);
-                free(buff_seqnum);
                 return;
             }
 
 
 
+            if (pkt_decode(buffer,receive_status,rcv_packet)!= PKT_OK){
+                perror("error with the encode of decode receiver ");
+                continue;
+            }
+            int seqnum = pkt_get_seqnum(rcv_packet);
+            //mauvais pacquet
+            if (pkt_get_type(rcv_packet) != PTYPE_DATA){
+                perror("wrong type, ignoring the packet");
+                continue;
+            }
+            //erreur d'index
+            if ((actual_window + 31)%256 < actual_window) {
+                if (seqnum < actual_window && seqnum > (actual_window + 31) % 256) {
+                    perror("wrong seqnum, ignoring the packet");
+                    continue;
+                }
+            }
+            else if (seqnum > actual_window + 31
+                     || seqnum < actual_window){
+                perror("wrong seqnum, ignoring the packet");
+                continue;
+            }
             fprintf(stderr,"taille du message recu : %d\n",receive_status);
 
             char ack[12];
             int size = 0;
 
             //CREATE THE FIRST ACK
-            if(first_message){//we make the first message for the first ptype data we get
-                first_message= 0;
-                //if doublon
-                if(buff_seqnum[pkt_get_seqnum(rcv_packet)%31] == pkt_get_seqnum(rcv_packet)){
+
+                //end of file
+                if(pkt_get_length(rcv_packet)==0 && pkt_get_tr(rcv_packet) ==0){
+                    fprintf(stderr, "\n END OF FILE \n");
+                    pkt_t *send_packet = pkt_new();
+                    pkt_set_type(send_packet,PTYPE_ACK);
+                    pkt_set_tr(send_packet, 0);
+                    pkt_set_window(send_packet, window_available);
+                    pkt_set_seqnum(send_packet, pkt_get_seqnum(rcv_packet)+1%255);
+                    pkt_set_timestamp(send_packet, 100);
+                    pkt_set_length(send_packet, 0);
+                    size_t len = 10;
+                    char to_send[len];
+                    pkt_encode(send_packet, to_send, &len);
+                    int sent_status = send(sfd, to_send,len, 0 );
+                    if(sent_status == -1){
+                        perror("ack not sent");
+                    }
+                    pkt_del(send_packet);
+                    pkt_del(rcv_packet);
+                    return;
+                }
+
+                if (is_empty_buff[seqnum%256] != 0){
+                    perror("packet duplicated, ignoring packet");
                     continue;
                 }
-                buff_seqnum[pkt_get_seqnum(rcv_packet)%31] = pkt_get_seqnum(rcv_packet);
-                fprintf(stderr , "WE ARE AT FIRST MESSAGE\n");
-                pkt_set_type(send_packet,PTYPE_ACK);
-                pkt_set_tr(send_packet, 0);
-                pkt_set_window(send_packet,window_available);
-                pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
-
-                pkt_encode(send_packet,ack ,(size_t*) &size);
-                int sent_status = send(sfd, ack,size, 0 );
-                if(sent_status == -1){
-                    perror("first ack not sent");
-                }
-                fprintf(stderr , "sent first ack\n");
-                memset((void *) ack, 0, 12);
-
-            }
-            else{
                 window_available --;
-                pkt_set_window(send_packet, window_available);
+                //CASE ACK
                 if(pkt_get_tr(rcv_packet) != 1){//not truncated
-                    fprintf(stderr, "========================\n");
-                    int write_status = fwrite(pkt_get_payload(rcv_packet),1,pkt_get_length(rcv_packet),stdout);
-                    fflush(stdout);
-                    fprintf(stderr, "============================\n");
 
-                    if(write_status <= 0){
-                        printf("error writing to stdout \n");
-                        fflush(stdout);
+                    is_empty_buff[seqnum%256] = pkt_get_length(rcv_packet);
+                    memcpy(payload_window[seqnum%256], pkt_get_payload(rcv_packet), pkt_get_length(rcv_packet));
+                    for (int i = actual_window; i < actual_window+32; ++i) {
+                        // case we don't have the packet for this indice
+                        if (is_empty_buff[i % 256] == 0){
+                            fprintf(stderr, "new first slide win : %d \n", i%256);
+                            actual_window  = i % 256;
+                            break;
+                        }
+                        else{
+                            fprintf(stderr, "========================\n");
+                            int write_status = fwrite(pkt_get_payload(rcv_packet),1,pkt_get_length(rcv_packet),stdout);
+                            fflush(stdout);
+                            fprintf(stderr, "============================\n");
+
+                            if(write_status <= 0){
+                                printf("error writing to stdout \n");
+                                fflush(stdout);
+                            }
+                            is_empty_buff[i%256] = 0;
+                        }
                     }
 
-                    window_available ++;
+                    int window_size = 0;
+                    for (int i = actual_window; i < actual_window + 31; ++i) {
+
+                        // we don't have the packet for this indice
+                        if (is_empty_buff[i % 256] == 0){
+                            window_size += 1;
+                        }
+                    }
+                    fprintf(stderr, "new window size : %d \n", window_size);
+                    fprintf(stderr, "sending ack of the received packet\n");
+                    pkt_t *send_packet = pkt_new();
                     pkt_set_type(send_packet,PTYPE_ACK);
-
-                    pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
-
-
-                    pkt_encode(send_packet,ack,(size_t *)&size);
-                    int sent_status = send(sfd, ack,size, 0 );
+                    pkt_set_tr(send_packet, 0);
+                    pkt_set_window(send_packet, window_size);
+                    pkt_set_seqnum(send_packet, pkt_get_seqnum(rcv_packet)+1%255);
+                    pkt_set_timestamp(send_packet, 100);
+                    pkt_set_length(send_packet, 0);
+                    size_t len = 10;
+                    char to_send[len];
+                    pkt_encode(send_packet, to_send, &len);
+                    int sent_status = send(sfd, to_send,len, 0 );
                     if(sent_status == -1){
-                        perror("first ack not sent");
+                        perror("ack not sent");
                     }
-
-                    fprintf(stderr , "sent ack\n");
-                    //insere dans la ll et renvoie
-                    memset((void *) ack, 0, 12);
+                    pkt_del(send_packet);
+                    //end of file
                 }
+                //CASE NACK
                 else{
-                    pkt_set_type(send_packet,PTYPE_NACK);
-                    pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
-                    pkt_encode(send_packet,ack,(size_t *)&size);
-                    int sent_status = send(sfd, ack,size, 0 );
-                    fprintf(stderr , "sent Nack\n");
-                    //insere dans la ll et renvoie
-                    memset((void *) ack, 0, 12);
+                    pkt_t *pkt = pkt_new();
+                    pkt_set_type(pkt, PTYPE_NACK);
+                    pkt_set_tr(pkt, 0);
+                    pkt_set_window(pkt, window_available);
+                    pkt_set_seqnum(pkt, pkt_get_seqnum(rcv_packet));
+                    pkt_set_timestamp(pkt, 100);
+                    pkt_set_length(pkt, 0);
+
+                    size_t len = 10;
+                    char to_send[len];
+                    pkt_encode(pkt, to_send, &len);
+
+                    //socklen_t size = sizeof(struct sockaddr);
+                    //int written = sendto(sock, to_send, len, 0, peer, size);
+                    int written = send(sfd, to_send, len, 0);
+                    if (written == -1){
+                    }
+                    pkt_del(pkt);
                 }
             }
-
-        }
-
-
     }
-
-
+    pkt_del(rcv_packet);
 }
 
 
