@@ -34,16 +34,15 @@ void send_package(int sfd,char*filename){
     int fd = fileno(fptr);
     int n;
     struct pollfd poll_files_descriptors[2];
-    if(fd == 0){
-        //create poll descriptors
-        poll_files_descriptors[0].fd  = fd;
-        poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
+    //create poll descriptors
+    poll_files_descriptors[0].fd  = fd;
+    poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
 
-        //POLL on the socket
-        poll_files_descriptors[1].fd  = sfd;
-        poll_files_descriptors[1].events = POLLIN | POLLOUT;
+    //POLL on the socket
+    poll_files_descriptors[1].fd  = sfd;
+    poll_files_descriptors[1].events = POLLIN | POLLOUT;
 //        poll_files_descriptors[1].events = POLLIN;
-    }
+
     int stdin_stdout;
     int receiver_window_space= 0;
     int receiver_window_max = 1;
@@ -51,132 +50,59 @@ void send_package(int sfd,char*filename){
     int acutal_seqnum = 0;
     int sent = 0;
     int received = 0;
-
-    //packet create
-    pkt_t *send_packet = pkt_new();
-    pkt_t *rcv_packet = pkt_new();
-    pkt_set_type(send_packet, PTYPE_DATA); //1 = data
-    pkt_set_tr(send_packet, 0 );
-    pkt_set_window(send_packet, 1);
-    pkt_set_seqnum(send_packet, 0);
-    pkt_set_timestamp(send_packet, 120);
-
-    //int seqnum = pkt_get_seqnum(send_packet);
-    //
     int buffer_size = 512;
     char buffer[buffer_size];
     char payload[512];
-    char ** buffer_window = malloc(sizeof (char*));
-    buffer_window[0] = malloc(512*sizeof (char ));
-    int *buffer_seqnum = malloc(sizeof(int));
-    buffer_seqnum[0] = 0;
+    char pckt_window[256][16+512];
     int first_ack = 1;
-    //
-    //remove blocking operation
-    fcntl(fd, F_SETFL, O_NONBLOCK);
-    fcntl(sfd, F_SETFL, O_NONBLOCK);
+    int Thelast = 0;
+    int actual_seqnum = 0;
+    int last_seqnum;
+    int acked_seqnum = 0;
 
+    //packet create
 
-
-
-
-
+    pkt_t *rcv_packet = pkt_new();
     while(1){
-        //create poll descriptors
-        if(fd != 0){
-            poll_files_descriptors[0].fd  = fd;
-            poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
-
-            poll_files_descriptors[1].fd  = sfd;
-            poll_files_descriptors[1].events = POLLIN | POLLOUT;
-        }
-        stdin_stdout = poll(poll_files_descriptors, 2 , 5000);
-        //error on stdin
-        if(stdin_stdout == -1){
-            perror("poll not working ");
-            return;
-        }
-        //cas de timeout on envoie le oldest
-        if(stdin_stdout == 0){
-            fprintf(stderr,"oldest_seqnum %d\n",oldest_seqnum);
-
-            //On recupere le payload et le seqnum dans les buffer pour renvoyer le packet
-            char *buff_Ack = buffer_window[oldest_seqnum];
-            if(buff_Ack == NULL|| strlen(buff_Ack) ==0){
-                continue;
-            }
-            fprintf(stderr,"buff_ack : %s\n",buff_Ack);
-            int len = 16 + strlen(buff_Ack);
-            char data[len];
-            pkt_set_seqnum(send_packet,oldest_seqnum);
-            pkt_set_payload(send_packet,buff_Ack,strlen(buff_Ack));
-            pkt_encode(send_packet,data,(size_t*)&len);
-            int sent_status = send(sfd,data,len,0);
-            //error on send
-            if(sent_status == -1 ){
-                fprintf(stderr, "nothing sent");
-            }
-            //looking for lowest seqnum in the buffer
-            oldest_seqnum = (oldest_seqnum+1)%255;
-            while(buffer_seqnum[oldest_seqnum] == -1){
-                oldest_seqnum = (oldest_seqnum+1)%255;
-            }
-        }
-
-       // memset((void *) buffer , 0 , buffer_size);
-        //check if something in the stdin and send to socket
-        //difference between actual seqnum and the lowest seqnum registered in the buffer in absolute value
-        int diff = acutal_seqnum%receiver_window_max-oldest_seqnum%receiver_window_max;
-        if(diff <0){
-            diff = -diff;
-        }
-        //We can read file and send to socket + conditions on sliding window + conditions on seqnums
-        //we also check if we have something in the socket and in the file and if we can write it to the socket
-        if(poll_files_descriptors[0].revents & POLLIN && receiver_window_space+1 <= receiver_window_max && diff<=receiver_window_max && poll_files_descriptors[1].revents & POLLOUT) { //&& poll_files_descriptors[1].revents & POLLOUT
-            //increasing sliding window and actual seqnum
-            receiver_window_space+=1;
-            acutal_seqnum = (acutal_seqnum + 1) % 255;
-            //receiver_window_space +=1; // for the next iteration
-            //readable et il y qqch
-            //memset((void *) buffer, 0, buffer_size);
+        if(!Thelast && receiver_window_max > receiver_window_space){
             n = fread(buffer, 1, buffer_size, fptr);
             if (n == 0) {
-                fprintf(stderr, "nothing read ");
+                last_seqnum = acutal_seqnum;
+                Thelast = 1;
                 continue;
             }
-            if (pkt_set_payload(send_packet, buffer, n) != PKT_OK){
-                fprintf(stderr, "erreur de set payload \n");
-            }
-            pkt_set_seqnum(send_packet,acutal_seqnum);
-            //encoding packet
+            fprintf(stderr,"\nactual seqnum : %d\n",acutal_seqnum);
             int data_initial = 16 + n;
             char data[data_initial];
-            int data_size = 16 + n;
-            if(pkt_encode(send_packet, data ,(size_t *)&data_size) !=PKT_OK){
-                fprintf(stderr,"erreur encode\n");
-            }
-            fprintf(stderr, "DATA_SIZE : %d\n ", data_size);
-            //check if initiated size is the same as sent size
-            if(data_initial!= data_size){
-                perror("error with allocating and memory encoding \n");
-            }
-            int send_status = send(sfd,data,data_size, 0 );
-            if(send_status !=0){
-                sent ++;}
+            pkt_t *sent_packet = pkt_new();
+            pkt_set_type(sent_packet, PTYPE_DATA);
+            pkt_set_tr(sent_packet, 0);
+            pkt_set_window(sent_packet, 0);
+            pkt_set_seqnum(sent_packet, acutal_seqnum);
+            pkt_set_timestamp(sent_packet, pkt_get_timestamp(rcv_packet));
+            pkt_set_payload(sent_packet, buffer, n);
+            pkt_encode(sent_packet, data, (size_t *)&data_initial);
+            memcpy(pckt_window[acutal_seqnum],data,16+512);
+            int send_status = send(sfd,data,data_initial, 0 );
+            receiver_window_space++;
             if(send_status == -1 ){
                 fprintf(stderr, "nothing sent");
             }
-
-            fprintf(stderr,"putted in the buff at the position : %d\n",pkt_get_seqnum(send_packet)%receiver_window_max);
-            buffer_window[pkt_get_seqnum(send_packet)%receiver_window_max] = buffer;
-            buffer_seqnum[pkt_get_seqnum(send_packet)%receiver_window_max] = pkt_get_seqnum(send_packet);
-//            fprintf(stderr,"seqnum de la data : %d \n",pkt_get_seqnum(send_packet));
-//            fprintf(stderr,"the buffer is then : %s\n",buffer_window[pkt_get_seqnum(send_packet)%receiver_window_max]);
-
+            acutal_seqnum = (acutal_seqnum+1)%256;
 
         }
 
+        //error on stdin
 
+
+        //check if something in the stdin and send to socket
+        //difference between actual seqnum and the lowest seqnum registered in the buffer in absolute value
+
+        //We can read file and send to socket + conditions on sliding window + conditions on seqnums
+        //we also check if we have something in the socket and in the file and if we can write it to the socket
+
+
+        int poll_reuslt = poll(poll_files_descriptors, 2, pkt_get_timestamp(rcv_packet));
 
         //case we received something in the socket(ACK/NACK)
         if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
@@ -193,31 +119,20 @@ void send_package(int sfd,char*filename){
             //ACK
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 received++;
+                receiver_window_space --;
                 //update window details
                 if(first_ack)
                 {
-                    fprintf(stderr, "ack seqnum : %d", pkt_get_seqnum(rcv_packet));
+                    fprintf(stderr, "ack seqnum : %d\n", pkt_get_seqnum(rcv_packet));
                     first_ack = 0;
                     receiver_window_max = pkt_get_window(rcv_packet);
 
-
-                    oldest_seqnum = 1;
-
-                    buffer_seqnum = (int*)realloc(buffer_seqnum,receiver_window_max*sizeof(int));
-
                     //buffer_seqnum[0] = pkt_get_seqnum(rcv_packet);
-
-                    *buffer_window = (char*)realloc(buffer_window,receiver_window_max * sizeof(char *));
-                    fprintf(stderr,"deleting buff \n");
                     fprintf(stderr, "receiver_window : %d\n", receiver_window_max);
-                    for (int i = 1; i < receiver_window_max; i++) {
-                        buffer_window[i] = (char*)malloc(MAX_PAYLOAD_SIZE * sizeof(char));
-                    }
-
                 }
 
                 fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
-                receiver_window_space -= 1 ;
+
                 fprintf(stderr, "max : %d , space : %d\n", receiver_window_max , receiver_window_space);
                 //setting new seqnum for send_packet
                 //pkt_set_window(send_packet,pkt_get_window(rcv_packet));
@@ -226,25 +141,13 @@ void send_package(int sfd,char*filename){
                 int ack_seqnum = (pkt_get_seqnum(rcv_packet));
                 //fprintf(stderr, "buffer position %d , acked : %s\n",pkt_get_seqnum(rcv_packet)%receiver_window_max, (buffer_window[pkt_get_seqnum(rcv_packet)%receiver_window_max]));
 
-                buffer_seqnum[pkt_get_seqnum(rcv_packet)] = -1;
-                if((oldest_seqnum) == (ack_seqnum) ){
-                    oldest_seqnum = (ack_seqnum+1)%255;
-                    while(buffer_seqnum[oldest_seqnum] == -1){
-                        oldest_seqnum = (oldest_seqnum+1)%255;
-                    }
-                }
                 fprintf(stderr,"i'm actually here");
             }
                 //NACK
             else if(pkt_get_type(rcv_packet) == PTYPE_NACK){
                 //sending the packet non-acknowledged
-                char *buff_Ack = buffer_window[pkt_get_seqnum(rcv_packet)];
-                int len = 16 + strlen(buff_Ack);
-                char data[len];
-                pkt_set_seqnum(send_packet,pkt_get_seqnum(rcv_packet));
-                pkt_set_payload(send_packet,buff_Ack,strlen(buff_Ack));
-                pkt_encode(send_packet,data,(size_t*)&len);
-                int sent_status = send(sfd,data,len,0);
+
+                int sent_status = send(sfd,pckt_window[pkt_get_seqnum(rcv_packet)],strlen(pckt_window[pkt_get_seqnum(rcv_packet)]),0);
                 if(sent_status == -1 ){
                     fprintf(stderr, "nothing sent");
                 }
@@ -259,17 +162,21 @@ void send_package(int sfd,char*filename){
         if(feof(fptr)){
             //wait for all acknowledgement
             fprintf(stderr, "in the feof\n");
-            if(sent != received)
-                continue;
-            pkt_set_length(send_packet,0);
-            char data[16];
-            int data_size = 16;
-            pkt_encode(send_packet,data ,(size_t *)&data_size);
-            int send_status = send(sfd,data,data_size, 0 );
+            int data_initial = 16 ;
+            char data[data_initial];
+            pkt_t *sent_packet = pkt_new();
+            pkt_set_type(sent_packet, PTYPE_DATA);
+            pkt_set_tr(sent_packet, 0);
+            pkt_set_window(sent_packet, 0);
+            pkt_set_seqnum(sent_packet, acutal_seqnum);
+            pkt_set_timestamp(sent_packet, pkt_get_timestamp(rcv_packet));
+            pkt_set_payload(sent_packet, payload, 0);
+            pkt_encode(sent_packet,data ,(size_t *)&data_initial);
+            int send_status = send(sfd,data,data_initial, 0 );
             if(send_status == -1 ){
                 fprintf(stderr, "nothing sent");
             }
-            pkt_del(send_packet);
+            pkt_del(sent_packet);
             pkt_del(rcv_packet);
 //            free(buffer_seqnum);
 //            fprintf(stderr , "receiver_window_max : %d\n", receiver_window_max);
@@ -281,6 +188,7 @@ void send_package(int sfd,char*filename){
             return;
         }
     }
+
     fclose(fptr);
 }
 
