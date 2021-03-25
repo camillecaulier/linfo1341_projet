@@ -27,10 +27,8 @@ void receive_package(const int sfd){
 
     struct pollfd poll_files_descriptors[1];
     int stdin_stdout;
-    int seqnum;
     int window_available = 7; //WINDOW SIZE => MAX IS 31
     int actual_window = 0;
-    int *buff_seqnum = malloc(window_available*sizeof (int));
     poll_files_descriptors[0].fd  = sfd;
     poll_files_descriptors[0].events = POLLIN;
     pkt_t *rcv_packet = pkt_new();
@@ -45,14 +43,7 @@ void receive_package(const int sfd){
     int poll_count;
 
     while(1){
-        if (first_message){
-            poll_count = poll(poll_files_descriptors, 1,-1);
-
-        }
-
-        else {
-            poll_count = poll(poll_files_descriptors, 1,2000);
-        }
+        poll_count = poll(poll_files_descriptors, 1,2000);
 
         if (poll_count == -1) {
             perror("poll error listening occured, breaking the loop");
@@ -73,31 +64,29 @@ void receive_package(const int sfd){
 
 
             if (pkt_decode(buffer,receive_status,rcv_packet)!= PKT_OK){
-                perror("error with the encode of decode receiver ");
+                perror("error with the encode of decode receiver\n");
                 continue;
             }
             int seqnum = pkt_get_seqnum(rcv_packet);
             //mauvais pacquet
             if (pkt_get_type(rcv_packet) != PTYPE_DATA){
-                perror("wrong type, ignoring the packet");
+                perror("wrong type, ignoring the packet\n");
                 continue;
             }
             //erreur d'index
-            if ((actual_window + 31)%256 < actual_window) {
-                if (seqnum < actual_window && seqnum > (actual_window + 31) % 256) {
-                    perror("wrong seqnum, ignoring the packet");
+            if ((actual_window + window_available)%256 < actual_window) {
+                if (seqnum < actual_window && seqnum > (actual_window + window_available) % 256) {
+                    perror("wrong seqnum, ignoring the packet\n");
                     continue;
                 }
             }
-            else if (seqnum > actual_window + 31
+            else if (seqnum > actual_window + window_available
                      || seqnum < actual_window){
-                perror("wrong seqnum, ignoring the packet");
+                perror("wrong seqnum, ignoring the packet\n");
                 continue;
             }
             fprintf(stderr,"taille du message recu : %d\n",receive_status);
 
-            char ack[12];
-            int size = 0;
 
             //CREATE THE FIRST ACK
 
@@ -127,7 +116,7 @@ void receive_package(const int sfd){
                     perror("packet duplicated, ignoring packet");
                     continue;
                 }
-                window_available --;
+
                 //CASE ACK
                 if(pkt_get_tr(rcv_packet) != 1){//not truncated
 
