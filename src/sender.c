@@ -68,8 +68,12 @@ void send_package(int sfd,char*filename){
     pkt_t *rcv_packet = pkt_new();
     while(1){
         int poll_reuslt = poll(poll_files_descriptors, 2, timestamp);
-        if(!feof(fptr) && receiver_window_max > receiver_window_space){
+        if(!Thelast && receiver_window_max > receiver_window_space){
             n = fread(buffer, 1, buffer_size, fptr);
+            if (n == 0) {
+                Thelast = 1;
+                continue;
+            }
             fprintf(stderr,"\nactual seqnum : %d\n",acutal_seqnum);
             int data_initial = 16 + n;
             char data[data_initial];

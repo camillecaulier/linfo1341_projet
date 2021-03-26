@@ -50,16 +50,28 @@ new first slide win : 8
 new window size : 31 
 sending ack of the received packet
 taille du message recu : 528
-new first slide win : 8 
-new window size : 30 
+========================
+============================
+new first slide win : 9 
+new window size : 31 
 sending ack of the received packet
 taille du message recu : 528
-new first slide win : 8 
-new window size : 29 
+========================
+============================
+new first slide win : 10 
+new window size : 31 
+sending ack of the received packet
+taille du message recu : 528
+========================
+============================
+new first slide win : 11 
+new window size : 31 
 sending ack of the received packet
 taille du message recu : 384
-new first slide win : 8 
-new window size : 28 
+========================
+============================
+new first slide win : 12 
+new window size : 31 
 sending ack of the received packet
 taille du message recu : 16
 

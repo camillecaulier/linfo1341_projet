@@ -13,20 +13,41 @@ actual seqnum : 1
 actual seqnum : 2
 
 actual seqnum : 3
-
+RESPONSE OF RECEIVER
+max : 31 , space : 2
+max : 31 , space : 2
+i'm actually here
 actual seqnum : 4
 
 actual seqnum : 5
-
+RESPONSE OF RECEIVER
+max : 31 , space : 3
+max : 31 , space : 3
+i'm actually here
 actual seqnum : 6
-
+RESPONSE OF RECEIVER
+max : 31 , space : 3
+max : 31 , space : 3
+i'm actually here
 actual seqnum : 7
-
+RESPONSE OF RECEIVER
+max : 31 , space : 3
+max : 31 , space : 3
+i'm actually here
 actual seqnum : 8
-
+RESPONSE OF RECEIVER
+max : 31 , space : 3
+max : 31 , space : 3
+i'm actually here
 actual seqnum : 9
-
+RESPONSE OF RECEIVER
+max : 31 , space : 3
+max : 31 , space : 3
+i'm actually here
 actual seqnum : 10
 
 actual seqnum : 11
-in the feof
+RESPONSE OF RECEIVER
+max : 31 , space : 4
+max : 31 , space : 4
+i'm actually herein the feof
