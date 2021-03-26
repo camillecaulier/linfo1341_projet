@@ -24,6 +24,22 @@ int print_usage(char *prog_name) {
     ERROR("Usage:\n\t%s [-f filename] [-s stats_filename] receiver_ip receiver_port", prog_name);
     return EXIT_FAILURE;
 }
+int getOldestSeqnum(int * isEmpty){
+    if(isEmpty[256]!= -1){
+        for(int i = 256 ; i>0;i--){
+            if (isEmpty[i] == -1){
+                return i+1;
+            }
+        }
+    }
+    else{
+        for(int  i = 1 ; i<257;i++){
+            if(isEmpty[i] == -1){
+                return i-1;
+            }
+        }
+    }
+}
 
 void send_package(int sfd,char*filename){
     //create file pointer
@@ -47,7 +63,7 @@ void send_package(int sfd,char*filename){
     int receiver_window_space= 0;
     int receiver_window_max = 1;
     int oldest_seqnum = 0;
-    int actual_seqnum = 0;
+
 
     int received = 0;
     int buffer_size = 512;
@@ -56,10 +72,14 @@ void send_package(int sfd,char*filename){
     char pckt_window[256][16+512];
     int first_ack = 1;
     int Thelast = 0;
-
+    int actual_seqnum = 0;
     int last_seqnum;
     int acked_seqnum = 0;
     int sent = 0;
+    int isEmpty[257];
+    for(int i = 0 ; i<257 ; i++){
+        isEmpty[i] = -1;
+    }
 
     int last_sent =0;
 
@@ -67,7 +87,8 @@ void send_package(int sfd,char*filename){
 
     pkt_t *rcv_packet = pkt_new();
     while(1){
-        int poll_reuslt = poll(poll_files_descriptors, 2, pkt_get_timestamp(rcv_packet));
+
+
         if(!Thelast && receiver_window_max > receiver_window_space){
             n = fread(buffer, 1, buffer_size, fptr);
             if (n == 0) {
@@ -75,7 +96,7 @@ void send_package(int sfd,char*filename){
                 Thelast = 1;
                 continue;
             }
-            fprintf(stderr, "\nactual seqnum : %d\n", actual_seqnum);
+            fprintf(stderr,"\nactual seqnum : %d\n",actual_seqnum);
             int data_initial = 16 + n;
             char data[data_initial];
             pkt_t *sent_packet = pkt_new();
@@ -86,13 +107,14 @@ void send_package(int sfd,char*filename){
             pkt_set_timestamp(sent_packet, pkt_get_timestamp(rcv_packet));
             pkt_set_payload(sent_packet, buffer, n);
             pkt_encode(sent_packet, data, (size_t *)&data_initial);
-            memcpy(pckt_window[actual_seqnum], data, 16 + 512);
+            memcpy(pckt_window[actual_seqnum],data,16+512);
             int send_status = send(sfd,data,data_initial, 0 );
             receiver_window_space++;
             if(send_status == -1 ){
                 fprintf(stderr, "nothing sent");
             }
             sent++;
+            isEmpty[actual_seqnum] = 16+n;
             actual_seqnum = (actual_seqnum + 1) % 256;
 
         }
@@ -106,10 +128,23 @@ void send_package(int sfd,char*filename){
         //We can read file and send to socket + conditions on sliding window + conditions on seqnums
         //we also check if we have something in the socket and in the file and if we can write it to the socket
 
+
+
+
         //case we received something in the socket(ACK/NACK)
+        int poll_result = poll(poll_files_descriptors, 2, pkt_get_timestamp(rcv_packet));
+        if(poll_result == 0){
+            int old = getOldestSeqnum(isEmpty);
+            int sent_status = send(sfd,pckt_window[old],strlen(pckt_window[old]),0);
+            if(sent_status == -1){
+                perror("file not sent");
+            }
+
+
+        }
         if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
             char recv_buff[1024];
-            //fprintf(stderr,"current buff %d: %s\n",actual_seqnum,buffer_window[actual_seqnum%receiver_window_max]);
+            //fprintf(stderr,"current buff %d: %s\n",acutal_seqnum,buffer_window[acutal_seqnum%receiver_window_max]);
             int recv_status = recv(sfd, recv_buff, 1024, 0);
             if(recv_status == -1){
                 fprintf(stderr,"nothing sent");
@@ -120,6 +155,12 @@ void send_package(int sfd,char*filename){
             fprintf(stderr, "RESPONSE OF RECEIVER\n");
             //ACK
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
+                if(pkt_get_seqnum(rcv_packet) == 0){
+                    isEmpty[256] = -1;
+                }
+                else{
+                    isEmpty[pkt_get_seqnum(rcv_packet)-1] = -1;
+                }
                 received++;
                 receiver_window_space --;
                 //update window details
