@@ -39,6 +39,7 @@ int getOldestSeqnum(int * isEmpty){
             }
         }
     }
+    return 0;
 }
 
 void send_package(int sfd,char*filename){
@@ -86,13 +87,13 @@ void send_package(int sfd,char*filename){
     //packet create
 
     pkt_t *rcv_packet = pkt_new();
+    int ind = 0;
     while(1){
 
 
-        if(!Thelast && receiver_window_max > receiver_window_space){
+        if(!Thelast && receiver_window_max > receiver_window_space && ind == acked_seqnum ){
             n = fread(buffer, 1, buffer_size, fptr);
             if (n == 0) {
-                last_seqnum = actual_seqnum;
                 Thelast = 1;
                 continue;
             }
@@ -161,8 +162,10 @@ void send_package(int sfd,char*filename){
                 else{
                     isEmpty[pkt_get_seqnum(rcv_packet)-1] = -1;
                 }
+                ind ++;
                 received++;
                 receiver_window_space --;
+                acked_seqnum = pkt_get_seqnum(rcv_packet);
                 //update window details
                 if(first_ack)
                 {

@@ -156,7 +156,7 @@ void receive_package(const int sfd){
                     pkt_t *send_packet = pkt_new();
                     pkt_set_type(send_packet,PTYPE_ACK);
                     pkt_set_tr(send_packet, 0);
-                    pkt_set_window(send_packet, window_size);
+                    pkt_set_window(send_packet, window_available);
                     pkt_set_seqnum(send_packet, pkt_get_seqnum(rcv_packet)+1%255);
                     pkt_set_timestamp(send_packet, 100);
                     pkt_set_length(send_packet, 0);
