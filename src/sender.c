@@ -35,11 +35,12 @@ void send_package(int sfd,char*filename){
     int n;
     struct pollfd poll_files_descriptors[2];
     //create poll descriptors
-
+    poll_files_descriptors[0].fd  = fd;
+    poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
 
     //POLL on the socket
     poll_files_descriptors[1].fd  = sfd;
-    poll_files_descriptors[1].events = POLLIN;
+    poll_files_descriptors[1].events = POLLIN | POLLOUT;
 //        poll_files_descriptors[1].events = POLLIN;
 
     int stdin_stdout;
@@ -51,26 +52,22 @@ void send_package(int sfd,char*filename){
     int received = 0;
     int buffer_size = 512;
     char buffer[buffer_size];
-    int is_empty[257];
-    for(int i = 0 ; i<257; i++){
-        is_empty[i] = 0;
-    }
+    char payload[512];
     char pckt_window[256][16+512];
     int first_ack = 1;
     int Thelast = 0;
     int actual_seqnum = 0;
     int last_seqnum;
     int acked_seqnum = 0;
-    int timestamp = 0;
 
     //packet create
 
     pkt_t *rcv_packet = pkt_new();
     while(1){
-        int poll_reuslt = poll(poll_files_descriptors, 2, timestamp);
         if(!Thelast && receiver_window_max > receiver_window_space){
             n = fread(buffer, 1, buffer_size, fptr);
             if (n == 0) {
+                last_seqnum = acutal_seqnum;
                 Thelast = 1;
                 continue;
             }
@@ -86,14 +83,12 @@ void send_package(int sfd,char*filename){
             pkt_set_payload(sent_packet, buffer, n);
             pkt_encode(sent_packet, data, (size_t *)&data_initial);
             memcpy(pckt_window[acutal_seqnum],data,16+512);
-            is_empty[acutal_seqnum] = 1;
             int send_status = send(sfd,data,data_initial, 0 );
             receiver_window_space++;
             if(send_status == -1 ){
                 fprintf(stderr, "nothing sent");
             }
             acutal_seqnum = (acutal_seqnum+1)%256;
-            pkt_del(sent_packet);
 
         }
 
@@ -107,7 +102,7 @@ void send_package(int sfd,char*filename){
         //we also check if we have something in the socket and in the file and if we can write it to the socket
 
 
-
+        int poll_reuslt = poll(poll_files_descriptors, 2, pkt_get_timestamp(rcv_packet));
 
         //case we received something in the socket(ACK/NACK)
         if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
@@ -125,20 +120,13 @@ void send_package(int sfd,char*filename){
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 received++;
                 receiver_window_space --;
-                if(pkt_get_seqnum(rcv_packet) == 0){
-                    is_empty[256] = 0;
-                }
-                else{
-                    is_empty[pkt_get_seqnum(rcv_packet)-1] = 0;
-                }
-
                 //update window details
                 if(first_ack)
                 {
                     fprintf(stderr, "ack seqnum : %d\n", pkt_get_seqnum(rcv_packet));
                     first_ack = 0;
                     receiver_window_max = pkt_get_window(rcv_packet);
-                    timestamp = pkt_get_timestamp(rcv_packet);
+
                     //buffer_seqnum[0] = pkt_get_seqnum(rcv_packet);
                     fprintf(stderr, "receiver_window : %d\n", receiver_window_max);
                 }
@@ -182,7 +170,7 @@ void send_package(int sfd,char*filename){
             pkt_set_window(sent_packet, 0);
             pkt_set_seqnum(sent_packet, acutal_seqnum);
             pkt_set_timestamp(sent_packet, pkt_get_timestamp(rcv_packet));
-            pkt_set_payload(sent_packet, NULL, 0);
+            pkt_set_payload(sent_packet, payload, 0);
             pkt_encode(sent_packet,data ,(size_t *)&data_initial);
             int send_status = send(sfd,data,data_initial, 0 );
             if(send_status == -1 ){
