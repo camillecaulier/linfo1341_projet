@@ -1,47 +1,32 @@
 [91m[ERROR] Sender has following arguments: filename is (null), stats_filename is (null), receiver_ip is ::1, receiver_port is 3332[0m
 [91m[ERROR] This is not an error, now let's code![0m
-DATA_SIZE : 528
- putted in the buff at the position : 0
+
+actual seqnum : 0
 RESPONSE OF RECEIVER
-ack seqnum : 1deleting buff 
-receiver_window : 7
-max : 7 , space : 1
-max : 7 , space : 0
-i'm actually hereDATA_SIZE : 528
- putted in the buff at the position : 2
-DATA_SIZE : 528
- putted in the buff at the position : 3
-DATA_SIZE : 528
- putted in the buff at the position : 4
-DATA_SIZE : 528
- putted in the buff at the position : 5
-DATA_SIZE : 528
- putted in the buff at the position : 6
-DATA_SIZE : 528
- putted in the buff at the position : 0
-DATA_SIZE : 528
- putted in the buff at the position : 1
-RESPONSE OF RECEIVER
-max : 7 , space : 7
-max : 7 , space : 6
-i'm actually hereDATA_SIZE : 528
- putted in the buff at the position : 2
-RESPONSE OF RECEIVER
-max : 7 , space : 7
-max : 7 , space : 6
-i'm actually hereDATA_SIZE : 528
- putted in the buff at the position : 3
-RESPONSE OF RECEIVER
-max : 7 , space : 7
-max : 7 , space : 6
-i'm actually hereDATA_SIZE : 528
- putted in the buff at the position : 4
-RESPONSE OF RECEIVER
-max : 7 , space : 7
-max : 7 , space : 6
-i'm actually hereDATA_SIZE : 384
- putted in the buff at the position : 5
-RESPONSE OF RECEIVER
-max : 7 , space : 7
-max : 7 , space : 6
-i'm actually herein the feof
+ack seqnum : 1
+receiver_window : 31
+max : 31 , space : 0
+max : 31 , space : 0
+i'm actually here
+actual seqnum : 1
+
+actual seqnum : 2
+
+actual seqnum : 3
+
+actual seqnum : 4
+
+actual seqnum : 5
+
+actual seqnum : 6
+
+actual seqnum : 7
+
+actual seqnum : 8
+
+actual seqnum : 9
+
+actual seqnum : 10
+
+actual seqnum : 11
+in the feof

@@ -1,28 +1,66 @@
 [91m[ERROR] Receiver has following arguments: stats_filename is (null), listen_ip is ::, listen_port is 1112[0m
 [91m[ERROR] This is not an error, now let's code![0m
-buffer : A
+buffer : @
 taille du message recu : 528
-WE ARE AT FIRST MESSAGE
-sent first ack
+========================
+============================
+new first slide win : 1 
+new window size : 31 
+sending ack of the received packet
 taille du message recu : 528
-====================================================sent ack
+========================
+============================
+new first slide win : 2 
+new window size : 31 
+sending ack of the received packet
 taille du message recu : 528
-====================================================sent ack
+========================
+============================
+new first slide win : 3 
+new window size : 31 
+sending ack of the received packet
 taille du message recu : 528
-====================================================sent ack
+========================
+============================
+new first slide win : 4 
+new window size : 31 
+sending ack of the received packet
 taille du message recu : 528
-====================================================sent ack
+========================
+============================
+new first slide win : 5 
+new window size : 31 
+sending ack of the received packet
 taille du message recu : 528
-====================================================sent ack
+========================
+============================
+new first slide win : 6 
+new window size : 31 
+sending ack of the received packet
 taille du message recu : 528
-====================================================sent ack
+========================
+============================
+new first slide win : 7 
+new window size : 31 
+sending ack of the received packet
 taille du message recu : 528
-====================================================sent ack
+========================
+============================
+new first slide win : 8 
+new window size : 31 
+sending ack of the received packet
 taille du message recu : 528
-====================================================sent ack
+new first slide win : 8 
+new window size : 30 
+sending ack of the received packet
 taille du message recu : 528
-====================================================sent ack
-taille du message recu : 528
-====================================================sent ack
+new first slide win : 8 
+new window size : 29 
+sending ack of the received packet
 taille du message recu : 384
-====================================================sent ack
+new first slide win : 8 
+new window size : 28 
+sending ack of the received packet
+taille du message recu : 16
+
+ END OF FILE 
