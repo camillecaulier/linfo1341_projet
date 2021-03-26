@@ -51,7 +51,10 @@ void send_package(int sfd,char*filename){
     int received = 0;
     int buffer_size = 512;
     char buffer[buffer_size];
-
+    int is_empty[257];
+    for(int i = 0 ; i<257; i++){
+        is_empty[i] = 0;
+    }
     char pckt_window[256][16+512];
     int first_ack = 1;
     int Thelast = 0;
@@ -84,6 +87,7 @@ void send_package(int sfd,char*filename){
             pkt_set_payload(sent_packet, buffer, n);
             pkt_encode(sent_packet, data, (size_t *)&data_initial);
             memcpy(pckt_window[acutal_seqnum],data,16+512);
+            is_empty[acutal_seqnum] = 1;
             int send_status = send(sfd,data,data_initial, 0 );
             receiver_window_space++;
             if(send_status == -1 ){
@@ -121,6 +125,13 @@ void send_package(int sfd,char*filename){
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
                 received++;
                 receiver_window_space --;
+                if(pkt_get_seqnum(rcv_packet) == 0){
+                    is_empty[256] = 0;
+                }
+                else{
+                    is_empty[pkt_get_seqnum(rcv_packet)-1] = 0;
+                }
+
                 //update window details
                 if(first_ack)
                 {
