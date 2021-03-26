@@ -91,7 +91,7 @@ void send_package(int sfd,char*filename){
     while(1){
 
 
-        if(!Thelast && receiver_window_max > receiver_window_space && ind == acked_seqnum ){
+        if(!Thelast && receiver_window_max > receiver_window_space && ind%256 == acked_seqnum ){
             n = fread(buffer, 1, buffer_size, fptr);
             if (n == 0) {
                 Thelast = 1;
