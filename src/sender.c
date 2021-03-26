@@ -48,7 +48,7 @@ void send_package(int sfd,char*filename){
     int receiver_window_max = 1;
     int oldest_seqnum = 0;
     int acutal_seqnum = 0;
-    int sent = 0;
+
     int received = 0;
     int buffer_size = 512;
     char buffer[buffer_size];
@@ -59,11 +59,15 @@ void send_package(int sfd,char*filename){
     int actual_seqnum = 0;
     int last_seqnum;
     int acked_seqnum = 0;
+    int sent = 0;
+
+    int last_sent =0;
 
     //packet create
 
     pkt_t *rcv_packet = pkt_new();
     while(1){
+        int poll_reuslt = poll(poll_files_descriptors, 2, pkt_get_timestamp(rcv_packet));
         if(!Thelast && receiver_window_max > receiver_window_space){
             n = fread(buffer, 1, buffer_size, fptr);
             if (n == 0) {
@@ -88,6 +92,7 @@ void send_package(int sfd,char*filename){
             if(send_status == -1 ){
                 fprintf(stderr, "nothing sent");
             }
+            sent++;
             acutal_seqnum = (acutal_seqnum+1)%256;
 
         }
@@ -102,7 +107,7 @@ void send_package(int sfd,char*filename){
         //we also check if we have something in the socket and in the file and if we can write it to the socket
 
 
-        int poll_reuslt = poll(poll_files_descriptors, 2, pkt_get_timestamp(rcv_packet));
+
 
         //case we received something in the socket(ACK/NACK)
         if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
@@ -162,6 +167,7 @@ void send_package(int sfd,char*filename){
         if(feof(fptr)){
             //wait for all acknowledgement
             fprintf(stderr, "in the feof\n");
+            if(!last_sent){
             int data_initial = 16 ;
             char data[data_initial];
             pkt_t *sent_packet = pkt_new();
@@ -177,6 +183,12 @@ void send_package(int sfd,char*filename){
                 fprintf(stderr, "nothing sent");
             }
             pkt_del(sent_packet);
+            last_sent = 1;
+            sent ++;
+            }
+            if(sent != received){
+                continue;
+            }
             pkt_del(rcv_packet);
 //            free(buffer_seqnum);
 //            fprintf(stderr , "receiver_window_max : %d\n", receiver_window_max);
