@@ -47,7 +47,7 @@ void send_package(int sfd,char*filename){
     int receiver_window_space= 0;
     int receiver_window_max = 1;
     int oldest_seqnum = 0;
-    int acutal_seqnum = 0;
+    int actual_seqnum = 0;
 
     int received = 0;
     int buffer_size = 512;
@@ -56,7 +56,7 @@ void send_package(int sfd,char*filename){
     char pckt_window[256][16+512];
     int first_ack = 1;
     int Thelast = 0;
-    int actual_seqnum = 0;
+
     int last_seqnum;
     int acked_seqnum = 0;
     int sent = 0;
@@ -71,29 +71,29 @@ void send_package(int sfd,char*filename){
         if(!Thelast && receiver_window_max > receiver_window_space){
             n = fread(buffer, 1, buffer_size, fptr);
             if (n == 0) {
-                last_seqnum = acutal_seqnum;
+                last_seqnum = actual_seqnum;
                 Thelast = 1;
                 continue;
             }
-            fprintf(stderr,"\nactual seqnum : %d\n",acutal_seqnum);
+            fprintf(stderr, "\nactual seqnum : %d\n", actual_seqnum);
             int data_initial = 16 + n;
             char data[data_initial];
             pkt_t *sent_packet = pkt_new();
             pkt_set_type(sent_packet, PTYPE_DATA);
             pkt_set_tr(sent_packet, 0);
             pkt_set_window(sent_packet, 0);
-            pkt_set_seqnum(sent_packet, acutal_seqnum);
+            pkt_set_seqnum(sent_packet, actual_seqnum);
             pkt_set_timestamp(sent_packet, pkt_get_timestamp(rcv_packet));
             pkt_set_payload(sent_packet, buffer, n);
             pkt_encode(sent_packet, data, (size_t *)&data_initial);
-            memcpy(pckt_window[acutal_seqnum],data,16+512);
+            memcpy(pckt_window[actual_seqnum], data, 16 + 512);
             int send_status = send(sfd,data,data_initial, 0 );
             receiver_window_space++;
             if(send_status == -1 ){
                 fprintf(stderr, "nothing sent");
             }
             sent++;
-            acutal_seqnum = (acutal_seqnum+1)%256;
+            actual_seqnum = (actual_seqnum + 1) % 256;
 
         }
 
@@ -106,13 +106,10 @@ void send_package(int sfd,char*filename){
         //We can read file and send to socket + conditions on sliding window + conditions on seqnums
         //we also check if we have something in the socket and in the file and if we can write it to the socket
 
-
-
-
         //case we received something in the socket(ACK/NACK)
         if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
             char recv_buff[1024];
-            //fprintf(stderr,"current buff %d: %s\n",acutal_seqnum,buffer_window[acutal_seqnum%receiver_window_max]);
+            //fprintf(stderr,"current buff %d: %s\n",actual_seqnum,buffer_window[actual_seqnum%receiver_window_max]);
             int recv_status = recv(sfd, recv_buff, 1024, 0);
             if(recv_status == -1){
                 fprintf(stderr,"nothing sent");
@@ -174,7 +171,7 @@ void send_package(int sfd,char*filename){
             pkt_set_type(sent_packet, PTYPE_DATA);
             pkt_set_tr(sent_packet, 0);
             pkt_set_window(sent_packet, 0);
-            pkt_set_seqnum(sent_packet, acutal_seqnum);
+            pkt_set_seqnum(sent_packet, actual_seqnum);
             pkt_set_timestamp(sent_packet, pkt_get_timestamp(rcv_packet));
             pkt_set_payload(sent_packet, payload, 0);
             pkt_encode(sent_packet,data ,(size_t *)&data_initial);
