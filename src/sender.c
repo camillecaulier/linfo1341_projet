@@ -276,6 +276,7 @@ int main(int argc, char **argv) {
     char *receiver_ip = NULL;
     char *receiver_port_err;
 
+
     uint16_t receiver_port;
 
     while ((opt = getopt(argc, argv, "f:s:h")) != -1) {
@@ -336,7 +337,7 @@ int main(int argc, char **argv) {
     //
     //
     //SENDING PAYLOADS
-    send_package(sfd,filename);
+    send_package(sfd,filename,stats_filename);
 
     close(sfd);
     return EXIT_SUCCESS;
