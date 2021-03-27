@@ -50,7 +50,7 @@ void send_package(int sfd,char*filename,char*output){
         fptr = fopen(filename,"r");}
     else if(filename == NULL){fptr = stdin;}
     if(output != NULL){
-        fptr = fopen(output,"r");}
+        fptr = fopen(output,"w+");}
     else if(output == NULL){fptr = stderr;}
     int fd = fileno(fptr);
     int fd2 = fileno(fptr2);

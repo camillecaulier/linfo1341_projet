@@ -23,7 +23,17 @@ int print_usage(char *prog_name) {
 
 
 
-void receive_package(const int sfd){
+void receive_package(const int sfd,char* filename){
+    FILE* fptr;
+
+    if(filename != NULL){
+        fptr = fopen(filename,"w+");}
+    else if(filename == NULL){fptr = stderr;}
+    //Stats
+    int packet_received = 0;
+    int doublons = 0;
+    int ack_sent = 0;
+    int nack_sent = 0;
 
     struct pollfd poll_files_descriptors[1];
     int stdin_stdout;
@@ -55,6 +65,7 @@ void receive_package(const int sfd){
 
 
             int receive_status = recv(sfd, buffer, buffer_size, 0);
+            packet_received++;
             if(receive_status == -1){
                 fprintf(stderr,"nothing received");
                 fflush(stdout);
@@ -107,18 +118,29 @@ void receive_package(const int sfd){
                     if(sent_status == -1){
                         perror("ack not sent");
                     }
+                    ack_sent++;
                     pkt_del(send_packet);
                     pkt_del(rcv_packet);
+                    fprintf(fptr,"\n==============================\n");
+                    fprintf(fptr,"stats:values\n");
+                    fprintf(fptr,"packets received:%d\n",packet_received);
+                    fprintf(fptr,"ack sent:%d\n",ack_sent);
+                    fprintf(fptr,"truncated packets:%d\n",nack_sent);
+                    fprintf(fptr,"doublons:%d\n",doublons);
+                    fprintf(fptr,"\n==============================\n");
+                    fclose(fptr);
                     return;
                 }
 
                 if (is_empty_buff[seqnum%256] != 0){
+                    doublons++;
                     perror("packet duplicated, ignoring packet");
                     continue;
                 }
 
                 //CASE ACK
                 if(pkt_get_tr(rcv_packet) != 1){//not truncated
+
 
                     is_empty_buff[seqnum%256] = pkt_get_length(rcv_packet);
                     memcpy(payload_window[seqnum%256], pkt_get_payload(rcv_packet), pkt_get_length(rcv_packet));
@@ -167,6 +189,7 @@ void receive_package(const int sfd){
                     if(sent_status == -1){
                         perror("ack not sent");
                     }
+                    ack_sent++;
                     pkt_del(send_packet);
                     //end of file
                 }
@@ -189,6 +212,7 @@ void receive_package(const int sfd){
                     int written = send(sfd, to_send, len, 0);
                     if (written == -1){
                     }
+                    nack_sent++;
                     pkt_del(pkt);
                 }
             }
@@ -266,7 +290,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    receive_package(sfd);
+    receive_package(sfd,stats_filename);
     close(sfd);
 
 
