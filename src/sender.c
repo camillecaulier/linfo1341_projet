@@ -46,14 +46,18 @@ void send_package(int sfd,char*filename,char*output){
     //create files pointer
     FILE* fptr;
     FILE * fptr2;
+
     if(filename != NULL){
         fptr = fopen(filename,"r");}
     else if(filename == NULL){fptr = stdin;}
     if(output != NULL){
-        fptr = fopen(output,"w+");}
-    else if(output == NULL){fptr = stderr;}
+        fptr2 = fopen(output,"w+");}
+    else if(output == NULL){fptr2 = stderr;}
+
     int fd = fileno(fptr);
     int fd2 = fileno(fptr2);
+    fprintf(stderr,"\n debug\n");
+
     //Stats
     int packet_sent=0;
     int Ack_received = 0;
@@ -100,6 +104,7 @@ void send_package(int sfd,char*filename,char*output){
 
 
     pkt_t *rcv_packet = pkt_new();
+    int timestamp = 250;
     //variable qui compte les seqnum comme ils sont censé arriver
     int ind = 0;
     while(1){
@@ -118,7 +123,7 @@ void send_package(int sfd,char*filename,char*output){
             pkt_set_tr(sent_packet, 0);
             pkt_set_window(sent_packet, 0);
             pkt_set_seqnum(sent_packet, actual_seqnum);
-            pkt_set_timestamp(sent_packet, pkt_get_timestamp(rcv_packet));
+            pkt_set_timestamp(sent_packet, 250);
             pkt_set_payload(sent_packet, payload, n);
             pkt_encode(sent_packet, data, (size_t *)&data_initial);
             memcpy(pckt_window[actual_seqnum],data,16+512);
@@ -148,7 +153,7 @@ void send_package(int sfd,char*filename,char*output){
 
 
         //case we received something in the socket(ACK/NACK)
-        int poll_result = poll(poll_files_descriptors, 2, pkt_get_timestamp(rcv_packet));
+        int poll_result = poll(poll_files_descriptors, 2, timestamp);
         //si on a un timeout du au poll on renvoie le packet le plus vieux
         if(poll_result == 0){
             Packet_lost ++;
@@ -211,7 +216,7 @@ void send_package(int sfd,char*filename,char*output){
         }
         if(feof(fptr)){
             //wait for all acknowledgement
-            fprintf(stderr, "in the feof\n");
+
             if(!last_sent){
                 int data_initial = 16 ;
                 char data[data_initial];
@@ -240,7 +245,7 @@ void send_package(int sfd,char*filename,char*output){
             fprintf(fptr2,"Stats:Values\n");
             fprintf(fptr2,"Packet sent:%d\n",packet_sent);
             fprintf(fptr2,"Ack received:%d\n",Ack_received);
-            fprintf(fptr2,"Packet truncated:%d",Nack_received);
+            fprintf(fptr2,"Packet truncated:%d\n",Nack_received);
             fprintf(fptr2,"Packet lost:%d\n",Packet_lost);
             fprintf(fptr2,"\n================================\n");
             fclose(fptr2);

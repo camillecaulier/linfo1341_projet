@@ -34,19 +34,25 @@ void receive_package(const int sfd,char* filename){
     int doublons = 0;
     int ack_sent = 0;
     int nack_sent = 0;
-
+    //poll init
     struct pollfd poll_files_descriptors[1];
-    int stdin_stdout;
-    int window_available = 7; //WINDOW SIZE => MAX IS 31
-    int actual_window = 0;
     poll_files_descriptors[0].fd  = sfd;
     poll_files_descriptors[0].events = POLLIN;
+
+
+    int window_available = 7; //WINDOW SIZE => MAX IS 31
+    int actual_window = 0;
+
+
     pkt_t *rcv_packet = pkt_new();
+    //on reçoit les packet dans ce buffer
     char buffer[1050];
+    //buffer pour regarder si on a deja reçu un certain packet
     int is_empty_buff[256];
     for (int i = 0; i < 256; ++i) {
-        is_empty_buff[i] = 0;
+        is_empty_buff[i] = -1;
     }
+    //on stocke les payloads pour pouvoir les écrire
     char payload_window[256][512];
     int buffer_size = 1050;
     int first_message = 1;
@@ -55,45 +61,34 @@ void receive_package(const int sfd,char* filename){
     while(1){
         poll_count = poll(poll_files_descriptors, 1,2000);
 
-        if (poll_count == -1) {
-            perror("poll error listening occured, breaking the loop");
-            pkt_del(rcv_packet);
-            return;
-        }
+
 
         if(poll_files_descriptors[0].revents & POLLIN ){
-
-
+            //on recoit le packet
             int receive_status = recv(sfd, buffer, buffer_size, 0);
             packet_received++;
             if(receive_status == -1){
                 fprintf(stderr,"nothing received");
-                fflush(stdout);
                 return;
             }
 
-
-
-            if (pkt_decode(buffer,receive_status,rcv_packet)!= PKT_OK){
-                perror("error with the encode of decode receiver\n");
-                continue;
-            }
+            pkt_decode(buffer,receive_status,rcv_packet);
             int seqnum = pkt_get_seqnum(rcv_packet);
             //mauvais pacquet
             if (pkt_get_type(rcv_packet) != PTYPE_DATA){
-                perror("wrong type, ignoring the packet\n");
+                fprintf(stderr,"bad type\n");
                 continue;
             }
             //erreur d'index
+            //cas extrémité
             if ((actual_window + window_available)%256 < actual_window) {
                 if (seqnum < actual_window && seqnum > (actual_window + window_available) % 256) {
-                    perror("wrong seqnum, ignoring the packet\n");
+                    fprintf(stderr,"bad seqnum\n");
                     continue;
                 }
             }
-            else if (seqnum > actual_window + window_available
-                     || seqnum < actual_window){
-                perror("wrong seqnum, ignoring the packet\n");
+            else if (seqnum > actual_window + window_available || seqnum < actual_window){
+                fprintf(stderr,"bad seqnum\n");
                 continue;
             }
             fprintf(stderr,"taille du message recu : %d\n",receive_status);
@@ -132,45 +127,43 @@ void receive_package(const int sfd,char* filename){
                     return;
                 }
 
-                if (is_empty_buff[seqnum%256] != 0){
+                if (is_empty_buff[seqnum] != -1){
                     doublons++;
-                    perror("packet duplicated, ignoring packet");
+                    fprintf(stderr,"doublon\n");
                     continue;
                 }
 
                 //CASE ACK
                 if(pkt_get_tr(rcv_packet) != 1){//not truncated
-
-
-                    is_empty_buff[seqnum%256] = pkt_get_length(rcv_packet);
+                    is_empty_buff[seqnum%256] = 1;
                     memcpy(payload_window[seqnum%256], pkt_get_payload(rcv_packet), pkt_get_length(rcv_packet));
-                    for (int i = actual_window; i < actual_window+32; ++i) {
+                    for (int i = actual_window; i < actual_window+window_available+1; ++i) {
                         // case we don't have the packet for this indice
-                        if (is_empty_buff[i % 256] == 0){
+                        if (is_empty_buff[i % 256] == -1){
                             fprintf(stderr, "new first slide win : %d \n", i%256);
                             actual_window  = i % 256;
                             break;
                         }
                         else{
-                            fprintf(stderr, "========================\n");
+                            fprintf(stderr, "\n========================\n");
                             int write_status = fwrite(pkt_get_payload(rcv_packet),1,pkt_get_length(rcv_packet),stdout);
                             fflush(stdout);
-                            fprintf(stderr, "============================\n");
+                            fprintf(stderr, "\n============================\n");
 
                             if(write_status <= 0){
                                 printf("error writing to stdout \n");
                                 fflush(stdout);
                             }
-                            is_empty_buff[i%256] = 0;
+                            is_empty_buff[i%256] = -1;
                         }
                     }
 
                     int window_size = 0;
-                    for (int i = actual_window; i < actual_window + 31; ++i) {
+                    for (int i = actual_window; i < actual_window + window_available; ++i) {
 
                         // we don't have the packet for this indice
-                        if (is_empty_buff[i % 256] == 0){
-                            window_size += 1;
+                        if (is_empty_buff[i % 256] == -1){
+                            window_size ++;
                         }
                     }
                     fprintf(stderr, "new window size : %d \n", window_size);
@@ -183,9 +176,9 @@ void receive_package(const int sfd,char* filename){
                     pkt_set_timestamp(send_packet, 100);
                     pkt_set_length(send_packet, 0);
                     size_t len = 10;
-                    char to_send[len];
-                    pkt_encode(send_packet, to_send, &len);
-                    int sent_status = send(sfd, to_send,len, 0 );
+                    char ack[len];
+                    pkt_encode(send_packet, ack, &len);
+                    int sent_status = send(sfd, ack,len, 0 );
                     if(sent_status == -1){
                         perror("ack not sent");
                     }
@@ -204,12 +197,11 @@ void receive_package(const int sfd,char* filename){
                     pkt_set_length(pkt, 0);
 
                     size_t len = 10;
-                    char to_send[len];
-                    pkt_encode(pkt, to_send, &len);
-
+                    char nack[len];
+                    pkt_encode(pkt, nack, &len);
                     //socklen_t size = sizeof(struct sockaddr);
                     //int written = sendto(sock, to_send, len, 0, peer, size);
-                    int written = send(sfd, to_send, len, 0);
+                    int written = send(sfd, nack, len, 0);
                     if (written == -1){
                     }
                     nack_sent++;
