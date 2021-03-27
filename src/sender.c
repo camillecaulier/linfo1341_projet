@@ -42,13 +42,26 @@ int getOldestSeqnum(int * isEmpty){
     return 0;
 }
 
-void send_package(int sfd,char*filename){
+void send_package(int sfd,char*filename,char*output){
     //create file pointer
     FILE* fptr;
+    FILE * fptr2;
     if(filename != NULL){
         fptr = fopen(filename,"r");}
     else if(filename == NULL){fptr = stdin;}
+    if(output != NULL){
+        fptr = fopen(output,"r");}
+    else if(output == NULL){fptr = stderr;}
     int fd = fileno(fptr);
+    int fd2 = fileno(fptr2);
+    //Stats
+    int packet_sent=0;
+    int Ack_received = 0;
+    int Nack_received = 0;
+    int Packet_lost = 0;
+
+
+
     int n;
     struct pollfd poll_files_descriptors[2];
     //create poll descriptors
@@ -115,6 +128,7 @@ void send_package(int sfd,char*filename){
                 fprintf(stderr, "nothing sent");
             }
             sent++;
+            packet_sent++;
             isEmpty[actual_seqnum] = 16+n;
             actual_seqnum = (actual_seqnum + 1) % 256;
 
@@ -135,6 +149,7 @@ void send_package(int sfd,char*filename){
         //case we received something in the socket(ACK/NACK)
         int poll_result = poll(poll_files_descriptors, 2, pkt_get_timestamp(rcv_packet));
         if(poll_result == 0){
+            Packet_lost ++;
             int old = getOldestSeqnum(isEmpty);
             int sent_status = send(sfd,pckt_window[old],strlen(pckt_window[old]),0);
             if(sent_status == -1){
@@ -156,6 +171,7 @@ void send_package(int sfd,char*filename){
             fprintf(stderr, "RESPONSE OF RECEIVER\n");
             //ACK
             if(pkt_get_type(rcv_packet) == PTYPE_ACK){
+                Ack_received ++;
                 if(pkt_get_seqnum(rcv_packet) == 0){
                     isEmpty[256] = -1;
                 }
@@ -191,6 +207,7 @@ void send_package(int sfd,char*filename){
             }
                 //NACK
             else if(pkt_get_type(rcv_packet) == PTYPE_NACK){
+                Nack_received ++;
                 //sending the packet non-acknowledged
 
                 int sent_status = send(sfd,pckt_window[pkt_get_seqnum(rcv_packet)],strlen(pckt_window[pkt_get_seqnum(rcv_packet)]),0);
@@ -226,18 +243,21 @@ void send_package(int sfd,char*filename){
             pkt_del(sent_packet);
             last_sent = 1;
             sent ++;
+            packet_sent++;
             }
             if(sent != received){
                 continue;
             }
             pkt_del(rcv_packet);
-//            free(buffer_seqnum);
-//            fprintf(stderr , "receiver_window_max : %d\n", receiver_window_max);
-//            for(int i = 0 ; i< receiver_window_max; i++){
-//                fprintf(stderr, "index : %d\n", i);
-//                free(buffer_window[i]);
-//            }
-//            free(buffer_window);
+            fprintf(fptr2,"\n================================\n");
+            fprintf(fptr2,"Stats:Values\n");
+            fprintf(fptr2,"Packet sent:%d\n",packet_sent);
+            fprintf(fptr2,"Ack received:%d\n",Ack_received);
+            fprintf(fptr2,"Packet truncated:%d",Nack_received);
+            fprintf(fptr2,"Packet lost:%d\n",Packet_lost);
+            fprintf(fptr2,"\n================================\n");
+            fclose(fptr2);
+
             return;
         }
     }
