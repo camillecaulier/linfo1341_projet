@@ -81,17 +81,7 @@ void receive_package(const int sfd,char* filename){
             }
             //erreur d'index
             //cas extrémité
-            if ((actual_window + window_available)%256 < actual_window) {
-                if (seqnum < actual_window && seqnum > (actual_window + window_available) % 256) {
-                    fprintf(stderr,"bad seqnum\n");
-                    continue;
-                }
-            }
-            else if (seqnum > actual_window + window_available || seqnum < actual_window){
-                fprintf(stderr,"bad seqnum\n");
-                fprintf(stderr, "the seqnum : %d\n ", seqnum);
-                continue;
-            }
+
             fprintf(stderr,"taille du message recu : %d\n",receive_status);
 
 
@@ -123,6 +113,7 @@ void receive_package(const int sfd,char* filename){
                     fprintf(fptr,"ack sent:%d\n",ack_sent);
                     fprintf(fptr,"truncated packets:%d\n",nack_sent);
                     fprintf(fptr,"doublons:%d\n",doublons);
+                    fprintf(fptr,"\n==============================\n");
                     fprintf(fptr,"\n==============================\n");
                     fclose(fptr);
                     return;
