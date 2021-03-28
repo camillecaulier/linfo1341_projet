@@ -7,11 +7,11 @@ rm -f received_file input_file
 dd if=/dev/urandom of=input_file bs=1 count=6000 &> /dev/null
 
 # On lance le simulateur de lien avec 10% de pertes et un délais de 50ms
-./Linksimulator/link_sim -p 3332 -P 1112 -l 10 -d 50 -R  &> link.log &
+./Linksimulator/link_sim -p 3332 -P 1112 -l 10  -d 50 -R  &> link.log &
 link_pid=$!
 
 # On lance le receiver et capture sa sortie standard
-./receiver :: 1112 1>output_file 2> receiver.log &
+valgrind --tool=memcheck --leak-check=yes ./receiver :: 1112 1>output_file 2> receiver.log &
 receiver_pid=$!
 
 cleanup()
@@ -22,8 +22,8 @@ cleanup()
 }
 trap cleanup SIGINT  # Kill les process en arrière plan en cas de ^-C
 
-# On démarre le transfert
-if ! ./sender ::1 3332 < input_file 2> sender.log ; then
+# On démarre le transfert ::1 3332
+if ! valgrind --tool=memcheck --leak-check=yes ./sender ::1 3332 < input_file 2> sender.log ; then
   echo "Crash du sender!"
   cat sender.log
   err=1  # On enregistre l'erreur

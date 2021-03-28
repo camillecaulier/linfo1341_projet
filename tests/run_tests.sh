@@ -4,4 +4,4 @@ echo "A very simple test"
 # Run the same test, but this time with valgrind #VALGRIND=1 ./tests/simple_test.sh
 echo "A very simple test, with Valgrind"
 
-#VALGRIND=1 ./tests/test.sh
+#VALGRIND=1 ./tests/big_test.sh

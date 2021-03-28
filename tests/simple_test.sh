@@ -3,8 +3,8 @@
 # cleanup d'un test précédent
 rm -f received_file input_file
 
-# Fichier au contenu aléatoire de 512 octets
-dd if=/dev/urandom of=input_file bs=1 count=512 &> /dev/null
+# Fichier au contenu aléatoire de 6000 octets
+dd if=/dev/urandom of=input_file bs=1 count=6000 &> /dev/null
 
 valgrind_sender="./sender ::1 123456"
 valgrind_receiver="./receiver ::1 123456"
