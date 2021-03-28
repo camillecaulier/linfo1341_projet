@@ -128,6 +128,25 @@ void send_package(int sfd,char*filename,char*output){
             if (n == 0) {
                 fprintf(stderr,"FEOF\n");
                 Thelast = 1;
+                fprintf(stderr,"here\n");
+                int data_initial = 16 ;
+                char data[16];
+                pkt_t *sent_packet = pkt_new();
+                pkt_set_type(sent_packet, PTYPE_DATA);
+                pkt_set_tr(sent_packet, 0);
+                pkt_set_window(sent_packet, 0);
+                pkt_set_seqnum(sent_packet, actual_seqnum);
+                pkt_set_timestamp(sent_packet, pkt_get_timestamp(rcv_packet));
+                pkt_set_payload(sent_packet, payload, 0);
+                pkt_encode(sent_packet,data ,(size_t *)&data_initial);
+                int send_status = send(sfd,data,data_initial, 0 );
+                if(send_status == -1 ){
+                    fprintf(stderr, "nothing sent");
+                }
+                pkt_del(sent_packet);
+                last_sent = 1;
+                sent ++;
+                packet_sent++;
                 continue;
             }
             fprintf(stderr,"\nactual seqnum : %d\n",actual_seqnum);
@@ -232,36 +251,10 @@ void send_package(int sfd,char*filename,char*output){
         if(Thelast){
             fprintf(stderr , "in the last");
             //wait for all acknowledgement
+
+
             if(sent != received){
-                int old = getOldestSeqnum(isEmpty);
-                int sent_status = send(sfd,pckt_window[old],strlen(pckt_window[old]),0);
-                if(sent_status == -1){
-                    perror("file not sent");
-                }
-
                 continue;
-            }
-
-            if(!last_sent){
-                fprintf(stderr,"here\n");
-                int data_initial = 16 ;
-                char data[16];
-                pkt_t *sent_packet = pkt_new();
-                pkt_set_type(sent_packet, PTYPE_DATA);
-                pkt_set_tr(sent_packet, 0);
-                pkt_set_window(sent_packet, 0);
-                pkt_set_seqnum(sent_packet, actual_seqnum);
-                pkt_set_timestamp(sent_packet, pkt_get_timestamp(rcv_packet));
-                pkt_set_payload(sent_packet, payload, 0);
-                pkt_encode(sent_packet,data ,(size_t *)&data_initial);
-                int send_status = send(sfd,data,data_initial, 0 );
-                if(send_status == -1 ){
-                    fprintf(stderr, "nothing sent");
-                }
-                pkt_del(sent_packet);
-                last_sent = 1;
-                sent ++;
-                packet_sent++;
             }
 
             pkt_del(rcv_packet);
