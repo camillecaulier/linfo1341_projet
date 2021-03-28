@@ -1,0 +1,2 @@
+1) error with the seqnum in the receiver
+2) infinite loop with 17 sent and 7 received => we are infinitely waiting for acknowledgements that we haven't received yet
