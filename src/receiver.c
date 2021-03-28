@@ -89,6 +89,7 @@ void receive_package(const int sfd,char* filename){
             }
             else if (seqnum > actual_window + window_available || seqnum < actual_window){
                 fprintf(stderr,"bad seqnum\n");
+                fprintf(stderr, "the seqnum : %d\n ", seqnum);
                 continue;
             }
             fprintf(stderr,"taille du message recu : %d\n",receive_status);

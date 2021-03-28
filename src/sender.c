@@ -17,7 +17,7 @@
 #include "wait_for_client.h"
 #include "packet.h"
 #include <math.h>
-
+#include <time.h>
 #define BUFF_LEN
 
 int print_usage(char *prog_name) {
@@ -33,7 +33,7 @@ int getOldestSeqnum(int * isEmpty){
         }
     }
     else{
-        for(int  i = 1 ; i<257;i++){
+        for(int  i = 1 ; i<256;i++){
             if(isEmpty[i] == -1){
                 return i-1;
             }
@@ -42,6 +42,17 @@ int getOldestSeqnum(int * isEmpty){
     return 0;
 }
 
+//int read_timeout(int* timout_window , int size){
+//    for(int i = 0 ; i < size ; i++){
+//        if
+//    }
+//}
+//int set_time(int* timeout_window, int size){
+//    int time = time()
+//}
+//int update_time(int* timeout_window, int size){
+//    int =
+//}
 void send_package(int sfd,char*filename,char*output){
     //create files pointer
     FILE* fptr;
@@ -66,12 +77,10 @@ void send_package(int sfd,char*filename,char*output){
     //variable globale pour la taille du fichier lu
     int n;
     //create poll descriptors
-    struct pollfd poll_files_descriptors[2];
-    poll_files_descriptors[0].fd  = fd;
-    poll_files_descriptors[0].events = POLLIN; //Alert me when data is ready to recv() on this socket.
+    struct pollfd poll_files_descriptors;
     //POLL on the socket
-    poll_files_descriptors[1].fd  = sfd;
-    poll_files_descriptors[1].events = POLLIN | POLLOUT;
+    poll_files_descriptors.fd  = sfd;
+    poll_files_descriptors.events = POLLIN ;
     //POLL_files_descriptors[1].events = POLLIN;
 
     //variable pour décrire le nombre de place occupées dans la window
@@ -99,6 +108,10 @@ void send_package(int sfd,char*filename,char*output){
     for(int i = 0 ; i<256 ; i++){
         isEmpty[i] = -1;
     }
+    time_t time_buffer[256];
+    for(int i =0  ; i < 256 ; i++){
+        time_buffer[i] = 0 ;
+    }
     //variable qui empeche de renvoyer le end of file plusieurs fois
     int last_sent =0;
 
@@ -107,6 +120,7 @@ void send_package(int sfd,char*filename,char*output){
     int timestamp = 250;
     //variable qui compte les seqnum comme ils sont censé arriver
     int ind = 0;
+    //time_t start= clock();
     while(1){
 
         if(receiver_window_max > receiver_window_space && !Thelast){
@@ -154,19 +168,19 @@ void send_package(int sfd,char*filename,char*output){
 
 
         //case we received something in the socket(ACK/NACK)
-        int poll_result = poll(poll_files_descriptors, 2, timestamp);
+        int poll_result = poll(&poll_files_descriptors, 1, 500);
         //si on a un timeout du au poll on renvoie le packet le plus vieux
-        if(poll_result == 0 || ind != acked_seqnum){
+        fprintf(stderr,"i am here");
+        if(poll_result == 0){
+            fprintf(stderr ," packet has been lost");
             Packet_lost ++;
             int old = getOldestSeqnum(isEmpty);
             int sent_status = send(sfd,pckt_window[old],strlen(pckt_window[old]),0);
             if(sent_status == -1){
                 perror("file not sent");
             }
-
-
         }
-        if(poll_files_descriptors[1].revents & POLLIN ){// ack nack
+        else if(poll_files_descriptors.revents & POLLIN ){// ack nack
             char recv_buff[1024];
 
             int recv_status = recv(sfd, recv_buff, 1024, 0);
@@ -174,7 +188,7 @@ void send_package(int sfd,char*filename,char*output){
                 fprintf(stderr,"nothing sent");
                 fflush(stdout);
             }
-            //fprintf(stderr,"Ack received \n");
+            fprintf(stderr,"Ack received \n");
             pkt_decode(recv_buff,recv_status,rcv_packet);
             fprintf(stderr, "RESPONSE OF RECEIVER\n");
             //ACK
@@ -216,7 +230,7 @@ void send_package(int sfd,char*filename,char*output){
             }
         }
         if(Thelast){
-
+            fprintf(stderr , "in the last");
             //wait for all acknowledgement
             if(sent != received){
                 int old = getOldestSeqnum(isEmpty);
