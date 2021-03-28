@@ -109,9 +109,10 @@ void send_package(int sfd,char*filename,char*output){
     int ind = 0;
     while(1){
 
-        if(receiver_window_max > receiver_window_space && ind%256 == acked_seqnum &&!Thelast){
+        if(receiver_window_max > receiver_window_space && !Thelast){
             n = fread(payload, 1, buffer_size, fptr);
             if (n == 0) {
+                fprintf(stderr,"FEOF\n");
                 Thelast = 1;
                 continue;
             }
@@ -155,7 +156,7 @@ void send_package(int sfd,char*filename,char*output){
         //case we received something in the socket(ACK/NACK)
         int poll_result = poll(poll_files_descriptors, 2, timestamp);
         //si on a un timeout du au poll on renvoie le packet le plus vieux
-        if(poll_result == 0){
+        if(poll_result == 0 || ind != acked_seqnum){
             Packet_lost ++;
             int old = getOldestSeqnum(isEmpty);
             int sent_status = send(sfd,pckt_window[old],strlen(pckt_window[old]),0);
@@ -214,12 +215,23 @@ void send_package(int sfd,char*filename,char*output){
                 return;
             }
         }
-        if(feof(fptr)){
+        if(Thelast){
+
             //wait for all acknowledgement
+            if(sent != received){
+                int old = getOldestSeqnum(isEmpty);
+                int sent_status = send(sfd,pckt_window[old],strlen(pckt_window[old]),0);
+                if(sent_status == -1){
+                    perror("file not sent");
+                }
+
+                continue;
+            }
 
             if(!last_sent){
+                fprintf(stderr,"here\n");
                 int data_initial = 16 ;
-                char data[data_initial];
+                char data[16];
                 pkt_t *sent_packet = pkt_new();
                 pkt_set_type(sent_packet, PTYPE_DATA);
                 pkt_set_tr(sent_packet, 0);
@@ -237,9 +249,7 @@ void send_package(int sfd,char*filename,char*output){
                 sent ++;
                 packet_sent++;
             }
-            if(sent != received){
-                continue;
-            }
+
             pkt_del(rcv_packet);
             fprintf(fptr2,"\n================================\n");
             fprintf(fptr2,"Stats:Values\n");
